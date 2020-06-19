@@ -1,24 +1,30 @@
-<!--  -->
 <template>
-  <el-row :gutter="0" class="m-header">
+  <!-- 使用el-ui实现布局 -->
+  <!-- gutter指定间隔 -->
+  <el-row :gutter="0"
+          class="m-header">
+    <!-- 通过span调整列宽比例 -->
     <el-col :span="5">
-      <geo/>
+      <!-- 使用组件 -->
+      <geo />
     </el-col>
     <el-col :span="5">
-      <user/>
+      <user />
     </el-col>
     <el-col :span="14">
-      <navbar/>
+      <navbar />
     </el-col>
   </el-row>
 </template>
 
 <script>
+// 引入组件
 import Geo from './geo'
 import User from './user'
 import Navbar from './nav'
+// 声明组件
 export default {
-  components:{
+  components: {
     Geo,
     User,
     Navbar
