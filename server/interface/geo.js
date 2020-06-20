@@ -28,7 +28,9 @@ router.get('/getPosition', async (ctx) => {
   }
 })
 
+// 得到省列表
 router.get('/province', async (ctx) => {
+  // // 需要引入province模型，得到其find方法
   // let province = await Province.find()
   // ctx.body = {
   //   province: province.map(item => {
@@ -48,6 +50,7 @@ router.get('/province', async (ctx) => {
   }
 })
 
+// 得到指定省的城市
 router.get('/province/:id', async (ctx) => {
   // let city = await City.findOne({id: ctx.params.id})
   //

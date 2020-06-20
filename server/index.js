@@ -10,9 +10,9 @@ import Redis from 'koa-redis'
 import json from 'koa-json' // json美化
 import dbConfig from './dbs/config' // 导入数据库配置
 import passport from './interface/utils/passport' // 处理session验证
-import users from './interface/users' // users服务接口
-import geo from './interface/geo' // 城市服务接口
-import search from './interface/search'
+import users from './interface/users' // users服务
+import geo from './interface/geo' // 城市服务
+import search from './interface/search' // 搜索服务
 import categroy from './interface/categroy'
 import cart from './interface/cart'
 import order from './interface/order'

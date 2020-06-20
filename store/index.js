@@ -14,7 +14,7 @@ export const actions = {
     const { status: status2, data: { menu } } = await app.$axios.get('/geo/menu')
     // 掉用在home.js定义好的commmit
     commit('home/setMenu', status2 === 200 ? menu : [])
-     // 解构赋值异步请求得到热门城市数据
+    // 解构赋值异步请求得到热门城市数据
     const { status: status3, data: { result } } = await app.$axios.get('/search/hotPlace', {
       params: {
         city: app.store.state.geo.position.city.replace('市', '')

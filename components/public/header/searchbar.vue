@@ -18,6 +18,7 @@
           <button class="el-button el-button--primary"><i class="el-icon-search" /></button>
           <!-- 搜索结果 -->
           <!-- 通过计算属性决定返回与否 -->
+          <!-- 服务端SSR：通过vuex得到热门城市列表数据 -->
           <dl v-if="isHotPlace"
               class="hotPlace">
             <dt>热门搜索</dt>
@@ -34,6 +35,7 @@
             </dd>
           </dl>
         </div>
+        <!-- 服务端SSR：通过vuex得到热门城市列表数据 -->
         <p class="suggest">
           <a v-for="(item,idx) in $store.state.home.hotPlace.slice(0,5)"
              :key="idx"
@@ -83,14 +85,14 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import _ from 'lodash' // 用于延时
 export default {
   data () {
     return {
       search: '', // 输入值双向绑定
       isFocus: false, // 搜索框聚焦状态
-      hotPlace: [], // 用于循环渲染的数据
-      searchList: [],
+      hotPlace: [], // 热门地区循环渲染
+      searchList: [], // 搜索结果循环渲染
       hotPlaceList: []
     }
   },
@@ -133,9 +135,12 @@ export default {
       }, 200)
     },
     // 用于根据输入内容更新实时搜索结果
+    // 借助loadsh库,延时300毫秒执行
     input: _.debounce(async function () {
       let self = this;
+      // 从vuex取得当前城市，去掉“市”字（第三方服务限制）
       let city = self.$store.state.geo.position.city.replace('市', '')
+      // 查询数据
       self.searchList = []
       let { status, data: { top } } = await self.$axios.get('/search/top', {
         params: {
@@ -143,6 +148,7 @@ export default {
           city
         }
       })
+      // 数据填充
       self.searchList = top.slice(0, 10)
     }, 300)
   }
