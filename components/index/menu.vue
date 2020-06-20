@@ -3,6 +3,8 @@
     <dl class="nav"
         @mouseleave="mouseleave">
       <dt>全部分类</dt>
+      <!-- 通过vuex获得menu数据实现SSR -->
+      <!-- 实现SSR：nuxtServerInit阶段渲染 -->
       <dd @mouseenter="mouseenter"
           v-for="(item,idx) in $store.state.home.menu"
           :key="idx">
@@ -32,7 +34,7 @@ export default {
     return {
       // 记录鼠标hover时的菜单类型
       kind: '',
-      // 菜单默认数据
+      // 菜单模拟数据，实际通过vuex实现SSR
       menu: [{
         type: 'food', // 更新不同的类，显示不同的图标
         name: '美食',

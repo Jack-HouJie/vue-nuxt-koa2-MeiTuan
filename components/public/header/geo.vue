@@ -1,6 +1,7 @@
 <template>
   <div class="m-geo">
     <!-- store是vuex实例，state获取状态的，geo模块名称，position模块下的变量 -->
+    <!-- vuex中实现SSR -->
     <i class="el-icon-location"/>{{ $store.state.geo.position.city }}
     <nuxt-link
       class="changeCity"

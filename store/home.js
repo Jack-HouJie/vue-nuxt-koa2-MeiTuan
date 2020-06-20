@@ -1,10 +1,10 @@
-const state = () => ({menu: [], hotPlace: []})
+const state = () => ({ menu: [], hotPlace: [] })
 
 const mutations = {
-  setMenu(state, val) {
+  setMenu (state, val) {
     state.menu = val
   },
-  setHotPlace(state, val) {
+  setHotPlace (state, val) {
     state.hotPlace = val
   }
 }
@@ -22,4 +22,4 @@ const actions = {
   }
 }
 
-export default {namespaced: true, state, mutations, actions}
+export default { namespaced: true, state, mutations, actions }

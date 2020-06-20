@@ -21,8 +21,14 @@ export default {
       user: ''
     }
   },
+  // 本处使用mounted钩子函数获取user
+  // (也可以在vuex中获取)
+  // 组件渲染完成后
+  // 本处用async await 处理promise 也可以用.then()
   async mounted () {
+    // 发送请求，解构赋值得到await异步结果
     const { status, data: { user } } = await this.$axios.get('/users/getUser')
+    // 如果服务器响应成功
     if (status === 200) {
       this.user = user
     }

@@ -1,17 +1,17 @@
 import Koa from 'koa'
 const consola = require('consola')
-const {Nuxt, Builder} = require('nuxt')
+const { Nuxt, Builder } = require('nuxt')
 
-//加载一些重要包
+// 引入一些重要包
 import mongoose from 'mongoose'
-import bodyParser from 'koa-bodyparser'
-import session from 'koa-generic-session'
+import bodyParser from 'koa-bodyparser' // 处理post请求
+import session from 'koa-generic-session' // 处理session
 import Redis from 'koa-redis'
-import json from 'koa-json'
-import dbConfig from './dbs/config'
-import passport from './interface/utils/passport'
-import users from './interface/users'
-import geo from './interface/geo'
+import json from 'koa-json' // json美化
+import dbConfig from './dbs/config' // 导入数据库配置
+import passport from './interface/utils/passport' // 处理session验证
+import users from './interface/users' // users服务接口
+import geo from './interface/geo' // 城市服务接口
 import search from './interface/search'
 import categroy from './interface/categroy'
 import cart from './interface/cart'
@@ -23,16 +23,18 @@ const port = process.env.PORT || 3000
 
 app.keys = ['mt', 'keyskeys']
 app.proxy = true
-app.use(session({key: 'mt', prefix: 'mt:uid', store: new Redis()}))
+// session配置，设置key名，前缀，存储方式
+app.use(session({ key: 'mt', prefix: 'mt:uid', store: new Redis() }))
+// 配置post请求参数
 app.use(bodyParser({
-  extendTypes:['json','form','text']
+  extendTypes: ['json', 'form', 'text']
 }))
 app.use(json())
 
 
 // 连接数据库
-mongoose.connect(dbConfig.dbs,{
-  useNewUrlParser:true
+mongoose.connect(dbConfig.dbs, {
+  useNewUrlParser: true
 })
 
 // passport相关配置
@@ -43,7 +45,7 @@ app.use(passport.session())
 let config = require('../nuxt.config.js')
 config.dev = !(app.env === 'production')
 
-async function start() {
+async function start () {
   // Instantiate nuxt.js
   const nuxt = new Nuxt(config)
 
@@ -52,7 +54,7 @@ async function start() {
     const builder = new Builder(nuxt)
     await builder.build()
   }
-  //导入和配置接口路由（mark）
+  // 导入和配置接口路由
   app.use(users.routes()).use(users.allowedMethods())
   app.use(geo.routes()).use(geo.allowedMethods())
   app.use(search.routes()).use(search.allowedMethods())
@@ -73,7 +75,7 @@ async function start() {
   })
 
   app.listen(port, host)
-  consola.ready({message: `Server listening on http://${host}:${port}`, badge: true})
+  consola.ready({ message: `Server listening on http://${host}:${port}`, badge: true })
 }
 
 start()

@@ -1,11 +1,13 @@
 import Router from 'koa-router';
 import axios from './utils/axios'
 
-let router = new Router({prefix: '/geo'})
-
+let router = new Router({ prefix: '/geo' })
+// 请求课程提供的接口数据签名
 const sign = 'abcd'
 
+// 得到城市位置
 router.get('/getPosition', async (ctx) => {
+  // 解构赋值得到数据
   let {
     status,
     data: {
@@ -16,7 +18,7 @@ router.get('/getPosition', async (ctx) => {
   if (status === 200) {
     ctx.body = {
       province,
-      city: '北京市'
+      city: province
     }
   } else {
     ctx.body = {
@@ -36,9 +38,9 @@ router.get('/province', async (ctx) => {
   //     }
   //   })
   // }
-  let {status, data: {
-      province
-    }} = await axios.get(`http://cp-tools.cn/geo/province?sign`)
+  let { status, data: {
+    province
+  } } = await axios.get(`http://cp-tools.cn/geo/province?sign`)
   ctx.body = {
     province: status === 200
       ? province
@@ -55,9 +57,9 @@ router.get('/province/:id', async (ctx) => {
   //     return {province: item.province, id: item.id, name: item.name}
   //   })
   // }
-  let {status, data: {
-      city
-    }} = await axios.get(`http://cp-tools.cn/geo/province/${ctx.params.id}?sign`)
+  let { status, data: {
+    city
+  } } = await axios.get(`http://cp-tools.cn/geo/province/${ctx.params.id}?sign`)
   if (status === 200) {
     ctx.body = {
       city
@@ -87,9 +89,9 @@ router.get('/city', async (ctx) => {
   //     }
   //   })
   // }
-  let {status, data: {
-      city
-    }} = await axios.get(`http://cp-tools.cn/geo/city?sign`);
+  let { status, data: {
+    city
+  } } = await axios.get(`http://cp-tools.cn/geo/city?sign`);
   if (status === 200) {
     ctx.body = {
       city
@@ -122,9 +124,9 @@ router.get('/hotCity', async (ctx) => {
   // ctx.body = {
   //   hots: nList
   // }
-  let {status, data: {
-      hots
-    }} = await axios.get(`http://cp-tools.cn/geo/hotCity?sign`);
+  let { status, data: {
+    hots
+  } } = await axios.get(`http://cp-tools.cn/geo/hotCity?sign`);
   if (status === 200) {
     ctx.body = {
       hots
@@ -136,14 +138,15 @@ router.get('/hotCity', async (ctx) => {
   }
 })
 
+// 得到首页左侧菜单
 router.get('/menu', async (ctx) => {
   // const result = await Menu.findOne()
   // ctx.body = {
   //   menu: result.menu
   // }
-  let {status, data: {
-      menu
-    }} = await axios.get(`http://cp-tools.cn/geo/menu?sign`);
+  let { status, data: {
+    menu
+  } } = await axios.get(`http://cp-tools.cn/geo/menu?sign`);
   if (status === 200) {
     ctx.body = {
       menu
