@@ -40,7 +40,9 @@ router.get('/hotPlace', async (ctx) => {
     result: status === 200 ? result : []
   }
 })
-//主页格调部分，根据不同的keyword返回当前城市相关
+
+// 主页“有格调”部分
+// 根据不同的keyword返回当前城市相关景点
 router.get('/resultsByKeywords', async (ctx) => {
   const { city, keyword } = ctx.query;
   let { status, data: {
@@ -57,6 +59,7 @@ router.get('/resultsByKeywords', async (ctx) => {
     pois: status === 200 ? pois : []
   }
 })
+
 //通过关键词获取当地城市的商品
 router.get('/products', async (ctx) => {
   let city = ctx.query.city || '长沙';
