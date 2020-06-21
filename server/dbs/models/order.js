@@ -5,29 +5,29 @@ const Order = new Schema({
     type: String,
     require: true
   },
-  user:{
-    type:String,
-    require:true
+  user: {
+    type: String,
+    require: true
   },
-  time:{
-    type:String,
-    require:true
+  time: {
+    type: String,
+    require: true
   },
-  total:{
-    type:Number,
-    require:true
+  total: {
+    type: Number,
+    require: true
   },
-  imgs:{
-    type:Array,
-    require:true
+  imgs: {
+    type: Array,
+    require: true
   },
-  name:{
-    type:String,
-    require:true
+  name: {
+    type: String,
+    require: true
   },
-  status:{
-    type:Number,
-    require:true
+  status: {
+    type: Number,
+    require: true
   }
 })
 
