@@ -6,7 +6,7 @@ const { Nuxt, Builder } = require('nuxt')
 import mongoose from 'mongoose'
 import bodyParser from 'koa-bodyparser' // 处理post请求
 import session from 'koa-generic-session' // 处理session
-import Redis from 'koa-redis'
+import Redis from 'koa-redis' // 存储session
 import json from 'koa-json' // json美化
 import dbConfig from './dbs/config' // 导入数据库配置
 import passport from './interface/utils/passport' // 处理session验证
