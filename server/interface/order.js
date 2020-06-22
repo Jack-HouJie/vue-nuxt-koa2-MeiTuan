@@ -7,21 +7,24 @@ import md5 from 'crypto-js/md5'
 
 const router = new Router({ prefix: '/order' })
 
-// 创建订单
-router.post('/createOrder', async(ctx) => {
+// 创建订单，返回订单id（用于支付等功能）
+router.post('/createOrder', async (ctx) => {
+  // 读请求参数：购物车id，金额，数量
   const { id, price, count } = ctx.request.body
   // console.log(id + " " + price + " " + count);
   const time = Date()
+  // 创建订单ID
   const orderID = md5(Math.random() * 1000 + time).toString()
-  // isAuthenticated 是否登录（登录拦截)
+  // 使用 isAuthenticated 验证是否登录
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: -1,
       msg: '请先登录!'
     }
   } else {
-    // 异步，查询购物车，findOne：找到第一个就返回
+    // mongoose查询购物车，findOne：找到第一个就返回
     const findCart = await Cart.findOne({ cartNo: id })
+    // 创建订单实例
     const order = new Order({
       id: orderID,
       count,
@@ -32,15 +35,16 @@ router.post('/createOrder', async(ctx) => {
       imgs: findCart.detail[0].imgs,
       status: 0
     })
-    // 订单创建成功，入库
+    // 创建成功时入库
     try {
       const result = await order.save()
       // 如果入库正常，需要删除购物车，因为购物车是临时状态
       if (result) {
+        // 数据库中删除指定购物车
         await findCart.remove()
         ctx.body = {
           code: 0,
-          //传过去 orderId 
+          //响应体传回 orderId 
           id: orderID
         }
       } else {

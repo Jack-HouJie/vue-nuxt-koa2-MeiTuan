@@ -37,12 +37,14 @@ export default {
     }
   },
   methods: {
-    //创建购物车
+    // 创建购物车
     createCart: async function () {
       let self = this;
-      //无产品库，把商品库的数据上传到购物车，通过id绑定关系
+      // 无产品库，把商品库的数据上传到购物车，通过id绑定关系
       let { status, data: { code, id } } = await this.$axios.post('/cart/create', {
         params: {
+          // 因为没有产品库，此处使用随机ID
+          // 实际中需使用产品对应ID
           id: Math.random().toString().slice(3, 9),
           detail: {
             name: self.meta.name,
@@ -52,6 +54,7 @@ export default {
         }
       })
       if (status === 200 && code === 0) {
+        // 跳转到创建的购物车的页面
         window.location.href = `/cart/?id=${id}`
       } else {
         console.log('error')
