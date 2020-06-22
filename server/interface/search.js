@@ -9,7 +9,7 @@ const sign = 'abcd';
 // 根据输入内容，获取相关最热门的吃喝玩乐，返回name,type
 router.get('/top', async (ctx) => {
   // 本处用线上接口获取数据，
-  // 也可以使用本地数据（建立Poi模型，使用mongooes）
+  // 也可以使用本地数据（通过mongooes读写）
   let { status, data: { top } } = await axios.get('http://cp-tools.cn/search/top', {
     // 另一种参数写法
     params: {
