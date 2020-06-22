@@ -1,6 +1,6 @@
 export default {
   // 数据库地址
-  dbs: 'mongodb://127.0.0.1:27017/student',
+  dbs: 'mongodb://127.0.0.1:27017/Meituan',
   redis: {
     // 只读配置
     get host () {
