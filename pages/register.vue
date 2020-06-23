@@ -70,6 +70,8 @@
 import CryptoJS from 'crypto-js' // 用于密码加密
 import axios from 'axios'
 export default {
+  // 使用blank模版
+  layout: 'blank',
   data () {
     return {
       statusMsg: '',
@@ -123,8 +125,6 @@ export default {
       }
     }
   },
-  // 使用blank模版
-  layout: 'blank',
   methods: {
     // 发送验证码
     sendMsg: function () {
@@ -148,26 +148,22 @@ export default {
       })
       // 如果都验证成功
       if (!namePass && !emailPass) {
-        // 发送Ajax请求发送验证码
-        // 可直接通过$axios使用，因为已经在nuxt配置文件中
-        // 的moudles字段引入了axios
+        // 通过axios发送Ajax请求
+        // 使用.then()语法，也可以用async await语法
         self.$axios.post('/users/verify', {
           // 设置接口需要的参数
-          // 设置中文URI编码
+          // 中文进行URI编码
           username: encodeURIComponent(self.ruleForm.name),
           email: self.ruleForm.email
-        }).then(({
-          status,
-          data
-        }) => {
+        }).then(({ status, data }) => {
           // 如果响应状态成功
           if (status === 200 && data && data.code === 0) {
             let count = 60;
             self.statusMsg = `验证码已发送,剩余${count--}秒`
-            // 设置延时调用
+            // 1秒刷新一次时间
             self.timerid = setInterval(function () {
               self.statusMsg = `验证码已发送,剩余${count--}秒`
-              // 如果60秒结束
+              // 如果60秒
               if (count === 0) {
                 // 取消延时调用
                 clearInterval(self.timerid)
@@ -186,23 +182,19 @@ export default {
       let self = this;
       // el-ui提供的输入验证API
       this.$refs['ruleForm'].validate((valid) => {
+        // 如果验证通过
         if (valid) {
           // 发送注册请求
           self.$axios.post('/users/signup', {
             // 设置post请求参数
-            // 中文编码
+            // 用户名中文编码
             username: window.encodeURIComponent(self.ruleForm.name),
-            // 密码加密库：npm i crypto-js
-            // 使用其中的MD5进行密码加密
-            // MD5处理之后会返回一个数组，保存多个值
+            // password-MD5处理之后会返回一个数组，保存多个值
             // 于是需要toString()函数
             password: CryptoJS.MD5(self.ruleForm.pwd).toString(),
             email: self.ruleForm.email,
             code: self.ruleForm.code
-          }).then(({
-            status,
-            data
-          }) => {
+          }).then(({ status, data }) => {
             // 如果响应正常
             if (status === 200) {
               // 如果data正常
