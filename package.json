@@ -1,9 +1,9 @@
 {
-  "name": "loveVueApp",
+  "name": "Vue_Meituan",
   "version": "1.0.0",
   "description": "My divine Nuxt.js project",
-  "author": "Chocolate1999",
-  "private": true,
+  "author": "HouJie",
+  "private": false,
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server --exec babel-node",
     "build": "nuxt build",
@@ -21,7 +21,7 @@
     "fibers": "^4.0.2",
     "js-pinyin": "^0.1.9",
     "koa": "^2.6.2",
-    "koa-bodyparser": "^4.3.0",
+    "koa-bodyparser": "^4.3.0", 
     "koa-generic-session": "^2.0.4",
     "koa-json": "^2.0.2",
     "koa-passport": "^4.1.3",

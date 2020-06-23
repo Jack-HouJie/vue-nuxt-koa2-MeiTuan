@@ -2,7 +2,11 @@
   <div class="m-user">
     <!-- 借助template模块条件渲染 -->
     <template v-if="user">
-      欢迎您，<span class="username">{{ user }}</span>
+      欢迎您，
+      <!-- 本处非SSR 
+      因为user数据是从data中获取的
+      而data数据是组件挂载后由前端发请求得到的-->
+      <span class="username">{{ user }}</span>
       [<nuxt-link to="/exit">退出</nuxt-link>]
     </template>
     <template v-else>
@@ -21,8 +25,7 @@ export default {
       user: ''
     }
   },
-  // 本处使用mounted钩子函数获取user
-  // (也可以在vuex中获取)
+  
   // 组件渲染完成后
   // 本处用async await 处理promise 也可以用.then()
   async mounted () {

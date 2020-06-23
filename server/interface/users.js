@@ -1,5 +1,5 @@
-// 用户模型接口
 import Router from 'koa-router'
+
 import Redis from 'koa-redis' // 用于保存验证码校验信息
 import nodeMailer from 'nodemailer' // 用于node发邮件
 import User from '../dbs/models/users' // 用户模型
@@ -12,6 +12,7 @@ let router = new Router({ prefix: '/users' })
 
 // 获取redis客户端
 let Store = new Redis().client
+
 
 // 注册接口
 router.post('/signup', async (ctx) => {
@@ -182,7 +183,7 @@ router.get('/exit', async (ctx, next) => {
     }
   }
 })
-// 获取用户
+// 获取用户（默认模版头步当前用户信息）
 router.get('/getUser', async (ctx) => {
   // 如果是登陆状态(passport提供的固定API)
   if (ctx.isAuthenticated()) {
@@ -200,5 +201,6 @@ router.get('/getUser', async (ctx) => {
     }
   }
 })
+
 
 export default router

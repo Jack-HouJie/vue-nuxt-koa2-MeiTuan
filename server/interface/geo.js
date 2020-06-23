@@ -7,6 +7,7 @@ const sign = 'abcd'
 
 // 得到城市位置
 router.get('/getPosition', async (ctx) => {
+  // 使用第三方接口得到城市数据
   // 解构赋值得到数据
   let {
     status,
@@ -15,6 +16,7 @@ router.get('/getPosition', async (ctx) => {
       city
     }
   } = await axios.get(`http://cp-tools.cn/geo/getPosition?sign`)
+  // 设置响应
   if (status === 200) {
     ctx.body = {
       province,
@@ -24,6 +26,42 @@ router.get('/getPosition', async (ctx) => {
     ctx.body = {
       province: '',
       city: ''
+    }
+  }
+})
+
+// 得到热门城市列表
+router.get('/hotCity', async (ctx) => {
+  // let list = [
+  //   '北京市',
+  //   '上海市',
+  //   '广州市',
+  //   '深圳市',
+  //   '天津市',
+  //   '西安市',
+  //   '杭州市',
+  //   '南京市',
+  //   '武汉市',
+  //   '成都市'
+  // ]
+  // let result = await City.find()
+  // let nList = []
+  // result.forEach(item => {
+  //   nList = nList.concat(item.value.filter(k => list.includes(k.name) || list.includes(k.province)))
+  // })
+  // ctx.body = {
+  //   hots: nList
+  // }
+  let { status, data: {
+    hots
+  } } = await axios.get(`http://cp-tools.cn/geo/hotCity?sign`);
+  if (status === 200) {
+    ctx.body = {
+      hots
+    }
+  } else {
+    ctx.body = {
+      hots: []
     }
   }
 })
@@ -106,40 +144,7 @@ router.get('/city', async (ctx) => {
   }
 })
 
-router.get('/hotCity', async (ctx) => {
-  // let list = [
-  //   '北京市',
-  //   '上海市',
-  //   '广州市',
-  //   '深圳市',
-  //   '天津市',
-  //   '西安市',
-  //   '杭州市',
-  //   '南京市',
-  //   '武汉市',
-  //   '成都市'
-  // ]
-  // let result = await City.find()
-  // let nList = []
-  // result.forEach(item => {
-  //   nList = nList.concat(item.value.filter(k => list.includes(k.name) || list.includes(k.province)))
-  // })
-  // ctx.body = {
-  //   hots: nList
-  // }
-  let { status, data: {
-    hots
-  } } = await axios.get(`http://cp-tools.cn/geo/hotCity?sign`);
-  if (status === 200) {
-    ctx.body = {
-      hots
-    }
-  } else {
-    ctx.body = {
-      hots: []
-    }
-  }
-})
+
 
 // 得到首页左侧菜单
 router.get('/menu', async (ctx) => {

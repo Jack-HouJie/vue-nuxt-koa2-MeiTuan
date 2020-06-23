@@ -1,72 +1,85 @@
+/* 基本配置 */
+// 导入Koa
 import Koa from 'koa'
-const consola = require('consola')
+// 创建一个Koa对象表示web app本身:
+const app = new Koa()
+// 指定服务器IP和端口号
+const host = process.env.HOST || '127.0.0.1'
+const port = process.env.PORT || 3000
+// 导入并配置nuxt
+let config = require('../nuxt.config.js')
+config.dev = !(app.env === 'production')
 const { Nuxt, Builder } = require('nuxt')
+// 导入打印日志工具
+const consola = require('consola')
 
-// 引入一些重要包
+
+/* 数据库、session相关 */
+// 引入mongoose
 import mongoose from 'mongoose'
-import bodyParser from 'koa-bodyparser' // 处理post请求
+// 连接数据库
+mongoose.connect(dbConfig.dbs, {
+  useNewUrlParser: true
+})
 import session from 'koa-generic-session' // 处理session
 import Redis from 'koa-redis' // 存储session
-import json from 'koa-json' // json美化
 import dbConfig from './dbs/config' // 导入数据库配置
-import passport from './interface/utils/passport' // 处理session验证
+app.keys = ['mt', 'keyskeys']
+app.proxy = true
+// session配置，设置key名，前缀，存储方式
+app.use(session({ key: 'mt', prefix: 'mt:uid', store: new Redis() }))
+// json美化
+import json from 'koa-json' // json美化
+app.use(json())
+// 引入passport（处理session验证）
+import passport from './interface/utils/passport' 
+// 添加passport中间件
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+/* 路由相关 */
+// 用于处理post请求参数（koa本身不支持）
+import bodyParser from 'koa-bodyparser' 
+// 添加中间件并配置（必须在使用之前添加）
+app.use(bodyParser({
+  extendTypes: ['json', 'form', 'text']
+}))
+// 导入koa路由
+import geo from './interface/geo' // 引入城市服务路由
 import users from './interface/users' // users服务
-import geo from './interface/geo' // 城市服务
 import search from './interface/search' // 搜索服务
 import categroy from './interface/categroy'
 import cart from './interface/cart'
 import order from './interface/order'
 
-const app = new Koa()
-const host = process.env.HOST || '127.0.0.1'
-const port = process.env.PORT || 3000
 
-app.keys = ['mt', 'keyskeys']
-app.proxy = true
-// session配置，设置key名，前缀，存储方式
-app.use(session({ key: 'mt', prefix: 'mt:uid', store: new Redis() }))
-// 配置post请求参数
-app.use(bodyParser({
-  extendTypes: ['json', 'form', 'text']
-}))
-app.use(json())
-
-
-// 连接数据库
-mongoose.connect(dbConfig.dbs, {
-  useNewUrlParser: true
-})
-
-// passport相关配置
-app.use(passport.initialize())
-app.use(passport.session())
-
-// Import and Set Nuxt.js options
-let config = require('../nuxt.config.js')
-config.dev = !(app.env === 'production')
-
+// 异步启动函数（处理每个http请求）
 async function start () {
-  // Instantiate nuxt.js
+  // 实例化Nuxt对象
   const nuxt = new Nuxt(config)
 
-  // Build in development
+  // 在开发模式下构建项目
   if (config.dev) {
     const builder = new Builder(nuxt)
     await builder.build()
   }
-  // 导入和配置接口路由
-  app.use(users.routes()).use(users.allowedMethods())
+
+  // 添加路由中间件
   app.use(geo.routes()).use(geo.allowedMethods())
+  app.use(users.routes()).use(users.allowedMethods())
   app.use(search.routes()).use(search.allowedMethods())
   app.use(categroy.routes()).use(categroy.allowedMethods())
   app.use(cart.routes()).use(cart.allowedMethods())
   app.use(order.routes()).use(order.allowedMethods())
+
+  // 响应请求
   app.use(ctx => {
     ctx.status = 200 // koa defaults to 404 when it sees that status is unset
-
     return new Promise((resolve, reject) => {
       ctx.res.on('close', resolve)
       ctx.res.on('finish', resolve)
+      // 通过nuxt渲染错误信息
       nuxt.render(ctx.req, ctx.res, promise => {
         // nuxt.render passes a rejected promise into callback on error.
         promise.then(resolve).catch(reject)
@@ -74,7 +87,9 @@ async function start () {
     })
   })
 
+  // 监听指定端口
   app.listen(port, host)
+  // 打印日志
   consola.ready({ message: `Server listening on http://${host}:${port}`, badge: true })
 }
 
