@@ -15,13 +15,15 @@
                     @focus="focus"
                     @blur="blur"
                     @input="input" />
-          <button class="el-button el-button--primary"><i class="el-icon-search" /></button>
+          <button class="el-button el-button--primary">
+            <i class="el-icon-search" />
+          </button>
           <!-- 搜索结果 -->
-          <!-- 通过计算属性决定返回与否 -->
-          <!-- 服务端SSR：通过vuex得到热门城市列表数据 -->
+          <!-- 通过计算属性决定是否显示 -->
           <dl v-if="isHotPlace"
               class="hotPlace">
             <dt>热门搜索</dt>
+            <!-- SSR：通过vuex得到热门城市列表数据 -->
             <dd v-for="(item,idx) in $store.state.home.hotPlace.slice(0,5)"
                 :key="idx">
               <a :href="'/products?keyword='+encodeURIComponent(item.name)">{{ item.name }}</a>
@@ -35,7 +37,7 @@
             </dd>
           </dl>
         </div>
-        <!-- 服务端SSR：通过vuex得到热门城市列表数据 -->
+        <!-- SSR：通过vuex得到热门景点列表数据 -->
         <p class="suggest">
           <a v-for="(item,idx) in $store.state.home.hotPlace.slice(0,5)"
              :key="idx"
@@ -91,25 +93,7 @@ export default {
     return {
       search: '', // 输入值双向绑定
       isFocus: false, // 搜索框聚焦状态
-      hotPlace: [], // 热门地区循环渲染
       searchList: [], // 搜索结果循环渲染
-      hotPlaceList: []
-    }
-  },
-  // 重写的获取热门景点，但已经有使用过vuex，
-  async mounted () {
-    let that = this;
-    let { status, data: { result } } = await that.$axios.get('search/hotPlace', {
-      params: {
-        city: that.$store.state.geo.position.city.replace('市', '')
-      }
-    })
-    // console.log(that.hotPlaceList);
-
-    if (status === 200) {
-      that.hotPlaceList = result.slice(0, 5)
-    } else {
-      console.log("error!!!");
     }
   },
   computed: {
@@ -129,7 +113,7 @@ export default {
     blur: function () {
       // 闭包需要暂存this
       let self = this;
-      // 延时，防止失焦热门结果直接消失无法点击
+      // 延时函数，防止失焦热门结果直接消失无法点击
       setTimeout(function () {
         self.isFocus = false
       }, 200)
@@ -140,7 +124,7 @@ export default {
       let self = this;
       // 从vuex取得当前城市，去掉“市”字（第三方服务限制）
       let city = self.$store.state.geo.position.city.replace('市', '')
-      // 查询数据
+      // 发送请求获取数据
       self.searchList = []
       let { status, data: { top } } = await self.$axios.get('/search/top', {
         params: {
