@@ -63,7 +63,7 @@ router.post('/createOrder', async (ctx) => {
 
 // 获取所有订单
 router.post('/getOrders', async ctx => {
-  // isAuthenticated 是否登录
+  // passport验证登录
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: -1,
@@ -73,7 +73,7 @@ router.post('/getOrders', async ctx => {
   } else {
     // 容错处理
     try {
-      // find 查询所有，可以加上分页逻辑进行优化，就是find().limit(15)，每页显示15条
+      // Order模型查操作
       const result = await Order.find()
       if (result) {
         ctx.body = {

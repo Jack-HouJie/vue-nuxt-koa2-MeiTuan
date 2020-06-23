@@ -2,9 +2,11 @@
   <div class="m-order">
     <ul>
       <li v-if="cur.length">
-        <el-row v-for="(item, idx) in cur" :key="idx">
+        <el-row v-for="(item, idx) in cur"
+                :key="idx">
           <el-col :span="4">
-            <img :src="item.img" alt="">
+            <img :src="item.img"
+                 alt="">
           </el-col>
           <el-col :span="10">
             <h4>{{ item.name }}</h4>
@@ -18,9 +20,8 @@
           </el-col>
         </el-row>
       </li>
-      <li
-        v-else
-        class="empty">
+      <li v-else
+          class="empty">
         没有订单
       </li>
     </ul>
