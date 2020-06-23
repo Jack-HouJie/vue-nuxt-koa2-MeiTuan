@@ -13,7 +13,7 @@ export const actions = {
     commit('geo/setPosition', status === 200 ? { city, province } : { city: '', province: '' })
 
 
-    // SSR渲染热门城市数据
+    // SSR渲染热门城市数据 bug
     const { status: status3, data: { hotPlaceList } } = await app.$axios.get('/search/hotPlace', {
       params: {
         // 接口格式要求
