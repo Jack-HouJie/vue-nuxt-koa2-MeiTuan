@@ -30,7 +30,7 @@ export default {
       cart: []
     }
   },
-  //计算total
+  // 计算total
   computed: {
     total () {
       let total = 0;
@@ -60,10 +60,12 @@ export default {
       }
     }
   },
-  // 用ssr获取数据
+  // ssr：获取cart数据并渲染
   async asyncData (ctx) {
+    // 得到路由get请求查询字符串id
+    let id = ctx.query.id
     let { status, data: { code, data: { name, price } } } = await ctx.$axios.post('cart/getCart', {
-      id: ctx.query.id
+      id
     })
     if (status === 200 && code === 0 && name) {
       return {

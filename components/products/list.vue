@@ -1,18 +1,16 @@
 <template>
   <div class="m-products-list">
     <dl>
-      <dd
-        v-for="item in nav"
-        :key="item.name"
-        :class="[item.name,item.acitve?'s-nav-active':'']"
-        @click="navSelect"
-      >{{ item.txt }}</dd>
+      <dd v-for="item in nav"
+          :key="item.name"
+          :class="[item.name,item.acitve?'s-nav-active':'']"
+          @click="navSelect">{{ item.txt }}
+      </dd>
     </dl>
     <ul>
-      <Item
-        v-for="(item,idx) in list"
-        :key="idx"
-        :meta="item"/>
+      <Item v-for="(item,idx) in list"
+            :key="idx"
+            :meta="item" />
     </ul>
   </div>
 </template>
@@ -25,13 +23,13 @@ export default {
   },
   props: {
     list: {
-      type:Array,
-      default(){
+      type: Array,
+      default () {
         return []
       }
     }
   },
-  data() {
+  data () {
     return {
       nav: [
         {
@@ -54,7 +52,7 @@ export default {
       ]
     }
   },
-  async asyncData({app}) {
+  async asyncData ({ app }) {
     let { data } = await app.$axios.get('searchList')
     return { items: data.list }
   },

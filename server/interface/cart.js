@@ -13,15 +13,19 @@ router.post('/create', async ctx => {
       msg: 'please login'
     }
   } else {
+    // 得到购物车加密ID
     let time = Date()
     let cartNo = md5(Math.random() * 1000 + time).toString()
+    
+    // 获取post请求参数
     let {
       params: {
         id,
         detail
       }
-    } = ctx.request.body // post获取参数
-    // 创建一个购物车模型实例
+    } = ctx.request.body 
+
+    // 根据得到的数据创建一个购物车模型实例
     // user：session下passport对象存储user
     let cart = new Cart({ id, cartNo, time, user: ctx.session.passport.user, detail })
     // 实例存入数据库

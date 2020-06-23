@@ -47,14 +47,15 @@ export default {
     List
   },
   computed: {
-    //通过是否有图片判断当前产品能否购买，模拟上线购买状态
+    // 通过是否有图片判断当前产品能否购买，模拟线上购买状态
     canOrder: function () {
       return this.list.filter(item => item.photos.length).length
     }
   },
-  //asyncData返回的数据会merge原来data中的数据，所以data可以省去
+  // SSR：asyncData获得组件数据，返回的数据自动写入组件data
   async asyncData (ctx) {
-    // 只有在服务端才能拿到keyword和type
+    // 服务端接受路由到此页面时的Get请求查询字符串
+    // 包括产品关键词和类型
     let { keyword, type } = ctx.query;
     let { status, data: { product, more: list, login } } = await ctx.$axios.get('/search/products', {
       params: {

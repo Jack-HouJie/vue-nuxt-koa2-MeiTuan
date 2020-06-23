@@ -1,5 +1,6 @@
 <template>
   <!-- el-ui 自定义模版 -->
+  <!-- cartData为表格数据 -->
   <el-table :data="cartData"
             style="width: 980px">
     <el-table-column prop="name"
@@ -8,9 +9,12 @@
     <el-table-column prop="price"
                      label="单价"
                      width="132" />
-    <!-- 去掉prop="count" 用作用域插槽动态变化 -->
     <el-table-column label="数量"
                      width="212">
+      <!-- 此句在table内部创建了一个
+      cartData的加强版数据结构scope
+      scope将cartData转化为行列数据
+      整个table内scope共享 -->
       <template slot-scope="scope">
         <!-- el-ui 计数器组件 -->
         <el-input-number v-model="scope.row.count"

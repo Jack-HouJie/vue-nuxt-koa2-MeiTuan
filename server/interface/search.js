@@ -73,6 +73,7 @@ router.get('/products', async (ctx) => {
       sign
     }
   })
+  
   // isAuthenticated()方法用来判断是否登录
   if (status === 200) {
     ctx.body = {
