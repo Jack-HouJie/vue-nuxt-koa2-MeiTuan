@@ -5,7 +5,10 @@
       <dd v-for="item in list"
           :key="item.id"
           @click="selectCity">
-        <nuxt-link to="/">{{ item.name==='市辖区'?item.province:item.name }}</nuxt-link>
+        <nuxt-link to="/">
+          <!-- 考虑直辖市特殊情况 -->
+          {{ item.name==='市辖区'?item.province:item.name }}
+        </nuxt-link>
       </dd>
     </dl>
   </div>
@@ -18,7 +21,7 @@ export default {
       list: []
     }
   },
-  // 异步获取数据（非SSR）
+  // 非SSR：异步获取数据
   async mounted () {
     let { status, data: { hots } } = await this.$axios.get('/geo/hotCity')
     if (status === 200) {
@@ -27,7 +30,7 @@ export default {
   },
   methods: {
     selectCity (e) {
-      // 发送切换城市请求
+      // 通过vuex切换城市请求
       this.$store.dispatch('geo/setPosition', {
         city: e.target.innerText
       })

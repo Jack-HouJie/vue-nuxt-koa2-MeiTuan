@@ -1,8 +1,7 @@
 <template>
   <div class="m-geo">
-    <!-- 从vuex中获取数据
-    vuex中的数据是在组件渲染之前由nuxt请求得到的，
-    因此这里的城市数据属于SSR -->
+    <!-- SSR：从vuex中获取数据
+    vuex中的数据在组件挂载前由nuxt请求得到 -->
     <i class="el-icon-location" />{{ $store.state.geo.position.city }}
     <nuxt-link class="changeCity"
                to="/changeCity">切换城市</nuxt-link>

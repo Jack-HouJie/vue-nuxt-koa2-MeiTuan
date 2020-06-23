@@ -54,6 +54,7 @@ export default {
       return this.list[this.kind]
     }
   },
+  // 非SSR获取数据（初始化“全部”数据）
   async mounted () {
     let self = this;
     //console.log(self.$store.state.geo.position.city);
@@ -66,6 +67,9 @@ export default {
     })
     if (status === 200 && count > 0) {
       let r = pois.filter(item => item.photos.length).map(item => {
+        // 数组中的每一项是一个对象，
+        // 前端直接使用属性名
+        // 后端响应数据填入属性值（方便修改）
         return {
           title: item.name,
           pos: item.type.split(';')[0],
@@ -80,12 +84,13 @@ export default {
     }
   },
   methods: {
+    // 非SSR获取数据（动态更新数据）
     over: async function (e) {
       let dom = e.target
       let tag = dom.tagName.toLowerCase()
       let self = this
       if (tag === 'dd') {
-        // 得到关键词
+        // 更新kind，得到关键词
         this.kind = dom.getAttribute('kind')
         let keyword = dom.getAttribute('keyword')
         // 发送请求

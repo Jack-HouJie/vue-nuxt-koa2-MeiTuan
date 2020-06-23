@@ -46,9 +46,9 @@ app.use(bodyParser({
   extendTypes: ['json', 'form', 'text']
 }))
 // 导入koa路由
-import geo from './interface/geo' // 引入城市服务路由
-import users from './interface/users' // users服务
-import search from './interface/search' // 搜索服务
+import geo from './interface/geo' // 城市路由接口
+import users from './interface/users' // 用户相关路由接口
+import search from './interface/search' // 搜索路由接口
 import categroy from './interface/categroy'
 import cart from './interface/cart'
 import order from './interface/order'

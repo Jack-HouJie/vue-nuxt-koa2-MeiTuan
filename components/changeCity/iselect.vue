@@ -40,7 +40,21 @@ export default {
       cities: [] //全国城市列表
     }
   },
-  //监听pvalue值，当省份发生改变的时候，可选城市也要跟着改变（联动）
+  // 非SSR：当页面加载时候，同时请求省份列表数据
+  mounted: async function () {
+    let self = this;
+    let { status, data: { province } } = await self.$axios.get('/geo/province')
+    if (status === 200) {
+      self.province = province.map(item => {
+        // 做数据映射，方便改后端数据结构
+        return {
+          value: item.id,
+          label: item.name
+        }
+      })
+    }
+  },
+  // 监听pvalue值，当省份发生改变的时候，可选城市也要跟着改变（联动）
   watch: {
     pvalue: async function (newPvalue) {
       let self = this;
@@ -57,29 +71,15 @@ export default {
       }
     }
   },
-  // 当页面加载时候，同时请求省份数据（非SSR）
-  mounted: async function () {
-    let self = this;
-    let { status, data: { province } } = await self.$axios.get('/geo/province')
-    if (status === 200) {
-      self.province = province.map(item => {
-        // 做数据映射，方便改后端数据结构
-        return {
-          value: item.id,
-          label: item.name
-        }
-      })
-    }
-  },
   methods: {
-    // 加防抖；传入的第一个参数是要搜索的内容，
-    // 第二个参数是回调（其参数是个对象数组，每一项的value值将显示在筛选框中/**
-    //当用户输入的时候，延时处理
+    // 参数：要搜索的内容，回调
+    // 回调函数参数：对象数组，每一项的value值将显示在筛选框中
+    // 加防抖：当用户输入的时候，延时处理
     querySearchAsync: _.debounce(async function (query, callback) {
       let self = this;
+      // 如果用户输入过省份得到了此省城市数据
       if (self.cities.length) {
-        // 过滤出结果
-        // 从所有城市中过滤出包含输入关键字的城市
+        // 从此省城市中过滤出包含输入关键字的城市
         callback(self.cities.filter(item => item.value.indexOf(query) > -1))
       } else {
         // 发送请求获取全国所有城市
@@ -98,18 +98,21 @@ export default {
         }
       }
     }, 300),
+
     // 搜索框和联动筛选公用的切换store中城市的方法
     handleSelect: function (param) {
       let city = ''
       if (typeof param === 'string') {
+        // 取得城市label
         city = this.city.filter(item => item.value === param)[0].label
       } else {
         city = param.value
       }
-      // 发送切换城市请求
+      // 切换vuex中城市
       this.$store.dispatch('geo/setPosition', {
         city
       })
+      // 跳转到主页
       this.$router.push({
         path: '/'
       })

@@ -1,12 +1,25 @@
-import Router from 'koa-router';
+import Router from 'koa-router'
 import axios from './utils/axios'
 import Province from '../dbs/models/province'
 
 let router = new Router({ prefix: '/categroy' })
-
+// 三方接口签名
 const sign = 'abcd';
 
 router.get('/crumbs', async (ctx) => {
+
+  // 使用三方接口获取数据
+  let { status, data: { areas, types } } = await axios.get('http://cp-tools.cn/categroy/crumbs', {
+    params: {
+      city: ctx.query.city.replace('市', '') || "北京",
+      sign
+    }
+  })
+  ctx.body = {
+    areas: status === 200 ? areas : [],
+    types: status === 200 ? types : []
+  }
+
   // // 本地数据库操作
   // let result = await Categroy.findOne({city: ctx.query.city.replace('市', '') || '北京'})
   // if (result) {
@@ -20,19 +33,8 @@ router.get('/crumbs', async (ctx) => {
   //     types: []
   //   }
   // }
-  
-  // 使用三方接口获取数据
-  let { status, data: { areas, types } } = await axios.get('http://cp-tools.cn/categroy/crumbs', {
-    params: {
-      city: ctx.query.city.replace('市', '') || "北京",
-      sign
-    }
-  })
-  ctx.body = {
-    areas: status === 200 ? areas : [],
-    types: status === 200 ? types : []
-  }
+
 })
 
 
-export default router;
+export default router

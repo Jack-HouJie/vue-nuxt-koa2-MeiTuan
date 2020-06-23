@@ -37,26 +37,29 @@ export default {
     let { status, data: { city } } = await self.$axios.get('/geo/city');
     if (status === 200) {
       let p // 城市拼音首字母
-      let c // p的字符编码
+      let c // 城市拼音首字母的字符编码
       //获取首字母下的所有城市名
       let d = {} // 保存首字母和城市对应关系
       city.forEach(item => {
-        // 获取拼音全拼，并取得首字母
+        // 获取拼音全拼，并取得首字母（字符串）
         p = pyjs.getFullChars(item.name).toLocaleLowerCase().slice(0, 1)
+        // 取得字符串第一个位置的字符的字符编码
         c = p.charCodeAt(0)
-        // 大写A~Z: 65~90
-        // 小写a~z: 97~122
-        // 本处取小写
+        // 字符编码：大写A~Z: 65~90 小写a~z: 97~122
+        // 如果是小写字母
         if (c > 96 && c < 123) {
+          // 初始化p字段为一个数组
           if (!d[p]) {
             d[p] = []
           }
+          // 把当前城市入栈
           d[p].push(item.name)
         }
       })
       // 从临时对象到数组的转变
       for (let [key, value] of Object.entries(d)) {
         blocks.push({
+          // 数据结构对应，方便修改
           title: key.toUpperCase(), // 大写首字母
           city: value // 对应城市
         })
@@ -68,9 +71,8 @@ export default {
   },
   methods: {
     changeTheCity: function (val) {
-      //console.log(val)
+      // 通过vuex 更新当前数据
       let that = this;
-      //self.$store.state.geo.position.city=val
       that.$store.dispatch('geo/setPosition', {
         city: val
       })

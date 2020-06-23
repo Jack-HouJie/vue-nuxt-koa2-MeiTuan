@@ -8,7 +8,7 @@
       <dd @mouseenter="mouseenter"
           v-for="(item,idx) in $store.state.home.menu"
           :key="idx">
-        <i :class="item.type" />{{ item.name }}<span class="arrow" />>
+        <i :class="item.type" />{{ item.name }}<span class="arrow" />
       </dd>
     </dl>
     <!-- 只在有kind时显示 -->
@@ -25,7 +25,6 @@
       </template>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -33,31 +32,7 @@ export default {
   data () {
     return {
       // 记录鼠标hover时的菜单类型
-      kind: '',
-      // 菜单模拟数据，实际通过vuex实现SSR
-      menu: [{
-        type: 'food', // 更新不同的类，显示不同的图标
-        name: '美食',
-        // 用于细节
-        child: [{
-          title: '美食',
-          child: ['代金卷', '甜点', '饮品', '火锅', '自助餐']
-        }]
-      }, {
-        type: 'takeout',
-        name: '外卖',
-        child: [{
-          title: '外卖',
-          child: ['美团外卖']
-        }]
-      }, {
-        type: 'hotel',
-        name: '酒店',
-        child: [{
-          title: '酒店星级',
-          child: ['经济型', '舒适/三星', '高档/四星', '豪华/五星']
-        }]
-      }]
+      kind: ''
     }
   },
   computed: {
@@ -66,6 +41,11 @@ export default {
     }
   },
   methods: {
+    mouseenter: function (e) {
+      // 利用原生事件更新kind
+      // 通过DOM选择符API找到触发事件元素中第一个i标签的类名
+      this.kind = e.target.querySelector('i').className
+    },
     mouseleave: function () {
       let self = this;
       // 延时处理 防止直接消失
@@ -73,12 +53,8 @@ export default {
         self.kind = ''
       }, 150)
     },
-    mouseenter: function (e) {
-      // 利用原生事件更新kind
-      this.kind = e.target.querySelector('i').className
-    },
     sover: function () {
-      // 如过移出左边进入detail则不再清空kind
+      // 移出主菜单进入detail时固定kind
       clearTimeout(this._timer)
     },
     sout: function () {
