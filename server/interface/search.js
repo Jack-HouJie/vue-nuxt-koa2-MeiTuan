@@ -74,7 +74,7 @@ router.get('/products', async (ctx) => {
     }
   })
   
-  // isAuthenticated()方法用来判断是否登录
+  // passport库提供的isAuthenticated()方法用来判断是否登录
   if (status === 200) {
     ctx.body = {
       product,

@@ -55,6 +55,7 @@ export default {
       })
       if (status === 200 && code === 0) {
         // 跳转到创建的购物车的页面
+        // Nuxt根据查询字符串进行SSR
         window.location.href = `/cart/?id=${id}`
       } else {
         console.log('error')

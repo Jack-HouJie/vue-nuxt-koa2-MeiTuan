@@ -13,22 +13,17 @@ router.post('/create', async ctx => {
       msg: 'please login'
     }
   } else {
-    // 得到购物车加密ID
+    // 创建购物车加密ID
     let time = Date()
     let cartNo = md5(Math.random() * 1000 + time).toString()
-    
-    // 获取post请求参数
-    let {
-      params: {
-        id,
-        detail
-      }
-    } = ctx.request.body 
 
-    // 根据得到的数据创建一个购物车模型实例
-    // user：session下passport对象存储user
+    // 获取post请求参数（产品ID、产品细节）
+    let { params: { id, detail } } = ctx.request.body
+
+    // 根据产品信息创建一个购物车模型实例
+    // user可通过session下passport对象获取
     let cart = new Cart({ id, cartNo, time, user: ctx.session.passport.user, detail })
-    // 实例存入数据库
+    // 模型写操作（实例存入数据库）
     let result = await cart.save()
     if (result) {
       ctx.body = {
@@ -47,16 +42,14 @@ router.post('/create', async ctx => {
 
 // 获取购物车信息
 router.post('/getCart', async ctx => {
+  // 从get请求查询字符串得到中购物车ID
   let { id } = ctx.request.body
-  //console.log(id);
   try {
-    // 使用mongoose提供的方法
+    // Cart模型查操作
     let result = await Cart.findOne({ cartNo: id })
     ctx.body = {
       code: 0,
-      data: result
-        ? result.detail[0] // 信息存在则返回
-        : {}
+      data: result ? result.detail[0] : {}
     }
   } catch (e) {
     ctx.body = {

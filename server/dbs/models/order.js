@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 const Order = new Schema({
+  // 订单ID
   id: {
     type: String,
     require: true

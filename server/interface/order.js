@@ -11,20 +11,20 @@ const router = new Router({ prefix: '/order' })
 router.post('/createOrder', async (ctx) => {
   // 读请求参数：购物车id，金额，数量
   const { id, price, count } = ctx.request.body
-  // console.log(id + " " + price + " " + count);
+  // 创建订单加密ID
   const time = Date()
-  // 创建订单ID
   const orderID = md5(Math.random() * 1000 + time).toString()
-  // 使用 isAuthenticated 验证是否登录
+  // 验证是否登录
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: -1,
       msg: '请先登录!'
     }
   } else {
-    // mongoose查询购物车，findOne：找到第一个就返回
+    // Cart查操作得到购物车模型
+    // findOne：找到第一个就返回
     const findCart = await Cart.findOne({ cartNo: id })
-    // 创建订单实例
+    // 创建订单模型实例
     const order = new Order({
       id: orderID,
       count,
@@ -38,13 +38,14 @@ router.post('/createOrder', async (ctx) => {
     // 创建成功时入库
     try {
       const result = await order.save()
-      // 如果入库正常，需要删除购物车，因为购物车是临时状态
+      // 如果入库正常
       if (result) {
         // 数据库中删除指定购物车
+        // (因为购物车是临时状态)
         await findCart.remove()
         ctx.body = {
           code: 0,
-          //响应体传回 orderId 
+          //响应体传回订单 
           id: orderID
         }
       } else {

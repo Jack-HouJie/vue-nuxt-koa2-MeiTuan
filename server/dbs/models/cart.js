@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 const Cart = new Schema({
-  // 购物车ID
+  // 产品ID
   id: {
     type: String,
     require: true
@@ -10,11 +10,12 @@ const Cart = new Schema({
     type: Array,
     require: true
   },
+  // 购物车ID
   cartNo: {
     type: String,
     require: true
   },
-  // 用户
+  // 用户信息
   user: {
     type: String,
     require: true

@@ -14,7 +14,8 @@
         </div>
       </el-col>
       <el-col v-else
-              class="empty">购物车为空</el-col>
+              class="empty">购物车为空
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -42,14 +43,14 @@ export default {
     }
   },
   methods: {
+    // 提交订单
     submit: async function () {
+      // 发送创建订单请求获得 code? , 订单ID
       const { status, data: { code, id } } = await this.$axios.post('/order/createOrder', {
         id: this.cartNo,
         price: this.cart[0].price,
         count: this.cart[0].count
       })
-      // console.log('status');
-      // console.log(this.cartNo + "  " + this.cart[0].price+ "  " +this.cart[0].count);
       if (status === 200 && code === 0) {
         this.$alert(`恭喜您，已成功下单，订单号:${id}`, '下单成功', {
           confirmButtonText: '确定',
@@ -60,15 +61,15 @@ export default {
       }
     }
   },
-  // ssr：获取cart数据并渲染
+  // ssr：获取指定购物车数据并渲染
   async asyncData (ctx) {
-    // 得到路由get请求查询字符串id
+    // 得到路由get请求查询字符串，购物车id
     let id = ctx.query.id
-    let { status, data: { code, data: { name, price } } } = await ctx.$axios.post('cart/getCart', {
-      id
-    })
+    // 发送请求获取指定ID购物车数据
+    let { status, data: { code, data: { name, price } } } = await ctx.$axios.post('cart/getCart', { id })
     if (status === 200 && code === 0 && name) {
       return {
+        // 更新组件数据实现SSR
         cart: [{
           name, price, count: 1
         }],

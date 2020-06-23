@@ -59,7 +59,7 @@ export default {
   },
   data () {
     return {
-      activeName: 'all', // 激活类型
+      activeName: 'all', // 激活标签类型
       list: [],
       cur: []
     }
