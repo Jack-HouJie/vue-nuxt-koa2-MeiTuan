@@ -1,4 +1,8 @@
-const state = () => ({ position: {} })
+const actions = {
+  setPosition: ({ commit }, position) => {
+    commit('setPosition', position)
+  }
+}
 
 const mutations = {
   setPosition (state, val) {
@@ -6,12 +10,6 @@ const mutations = {
   }
 }
 
-const actions = {
-  setPosition: ({
-    commit
-  }, position) => {
-    commit('setPosition', position)
-  }
-}
+const state = () => ({ position: {} })
 
 export default { namespaced: true, state, mutations, actions }

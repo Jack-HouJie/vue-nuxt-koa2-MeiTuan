@@ -1,18 +1,39 @@
-import Router from 'koa-router'
+import Router from 'koa-router' // koa路由
+import Redis from 'koa-redis' // redis
+import Passport from './utils/passport' // 处理session验证
+import User from '../dbs/models/users' // mongoose用户模型
+import axios from './utils/axios' // HTTP请求
+import nodeMailer from 'nodemailer' // node发邮件
+import Email from '../dbs/config' // 邮件配置文件
 
-import Redis from 'koa-redis' // 用于保存验证码校验信息
-import nodeMailer from 'nodemailer' // 用于node发邮件
-import User from '../dbs/models/users' // 用户模型
-import Passport from './utils/passport' // 验证模型
-import Email from '../dbs/config' // 配置文件
-import axios from './utils/axios' // 公用数据
-
-// 声明路由:创建路由对象，设置前缀
+// 创建路由对象，设置前缀
 let router = new Router({ prefix: '/users' })
-
 // 获取redis客户端
 let redisCli = new Redis().client
 
+// 设置路由接口
+// 获取用户登陆状态
+// 2.1需求：默认布局头初始化得到登陆信息
+router.get('/getUser', async (ctx) => {
+  // 如果是登陆状态
+  // ctx.isAuthenticated()验证登陆状态（根据cookie）
+  if (ctx.isAuthenticated()) {
+    // 从passport取出用户信息
+    const { username, email } = ctx.session.passport.user
+    // 返回信息存至响应体
+    ctx.body = {
+      user: username,
+      email
+    }
+  }
+  // 如果不是登陆状态（首次进入或退出登陆）
+  else {
+    ctx.body = {
+      user: '',
+      email: ''
+    }
+  }
+})
 
 // 发送验证码接口
 router.post('/verify', async (ctx, next) => {
@@ -171,26 +192,6 @@ router.post('/signin', async (ctx, next) => {
       }
     }
   })(ctx, next)
-})
-
-// 获取用户（默认模版头步当前用户信息）
-router.get('/getUser', async (ctx) => {
-  // 如果是登陆状态
-  // 当前请求的passport存在其session中
-  if (ctx.isAuthenticated()) {
-    // 从passport取出信息
-    const { username, email } = ctx.session.passport.user
-    // 返回信息存至响应体
-    ctx.body = {
-      user: username,
-      email
-    }
-  } else {
-    ctx.body = {
-      user: '',
-      email: ''
-    }
-  }
 })
 
 // 退出登陆

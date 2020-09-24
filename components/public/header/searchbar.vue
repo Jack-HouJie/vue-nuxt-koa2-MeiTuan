@@ -3,8 +3,10 @@
     <el-row class="m-header-searchbar">
       <el-col :span="3"
               class="left">
-        <a href="/"><img src="//s0.meituan.net/bs/fe-web-meituan/e5eeaef/img/logo.png"
-               alt="美团"></a>
+        <a href="/">
+          <img src="//s0.meituan.net/bs/fe-web-meituan/e5eeaef/img/logo.png"
+               alt="美团">
+        </a>
       </el-col>
       <el-col :span="15"
               class="center">
@@ -37,12 +39,16 @@
             </dd>
           </dl>
         </div>
+        <!-- 热门景点推荐 -->
         <!-- SSR：通过vuex得到热门景点列表数据 -->
         <p class="suggest">
           <a v-for="(item,idx) in $store.state.home.hotPlace.slice(0,5)"
              :key="idx"
-             :href="'/products?keyword='+encodeURIComponent(item.name)">{{ item.name }}</a>
+             :href="'/products?keyword='+encodeURIComponent(item.name)">
+            {{ item.name }}
+          </a>
         </p>
+        <!-- 中间文字导航 -->
         <ul class="nav">
           <li>
             <!-- 通过不同类名实现不同hover效果 -->
@@ -119,7 +125,7 @@ export default {
       }, 200)
     },
     // 用于根据输入内容更新实时搜索结果
-    // 借助loadsh库,延时300毫秒执行
+    // 借助loadsh库,实现防抖
     input: _.debounce(async function () {
       let self = this;
       // 从vuex取得当前城市，去掉“市”字（第三方服务限制）

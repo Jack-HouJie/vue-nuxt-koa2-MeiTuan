@@ -3,12 +3,14 @@
     <dl class="nav"
         @mouseleave="mouseleave">
       <dt>全部分类</dt>
-      <!-- 通过vuex获得menu数据实现SSR -->
-      <!-- 实现SSR：nuxtServerInit阶段渲染 -->
+      <!-- SSR：通过vuex获得menu数据 -->
+      <!-- nuxtServerInit阶段渲染 -->
       <dd @mouseenter="mouseenter"
           v-for="(item,idx) in $store.state.home.menu"
           :key="idx">
-        <i :class="item.type" />{{ item.name }}<span class="arrow" />
+        <i :class="item.type" />
+        {{ item.name }}
+        <span class="arrow" />
       </dd>
     </dl>
     <!-- 只在有kind时显示 -->
@@ -31,8 +33,7 @@
 export default {
   data () {
     return {
-      // 记录鼠标hover时的菜单类型
-      kind: ''
+      kind: '' // 记录鼠标hover时的菜单类型
     }
   },
   computed: {

@@ -2,9 +2,8 @@
   <div class="slide">
     <!-- el-ui提供的走马灯组件 -->
     <el-carousel height="240px">
-      <el-carousel-item 
-        v-for="item in list" 
-        :key="item.img">
+      <el-carousel-item v-for="item in list"
+                        :key="item.img">
         <img :src="item.img">
       </el-carousel-item>
     </el-carousel>

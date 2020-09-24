@@ -41,13 +41,11 @@ router.get('/hotPlace', async (ctx) => {
   }
 })
 
-// 主页“有格调”部分
+// 2.3主页“有格调”部分
 // 根据不同的keyword返回当前城市相关景点
 router.get('/resultsByKeywords', async (ctx) => {
   const { city, keyword } = ctx.query;
-  let { status, data: {
-    count, pois
-  } } = await axios.get('http://cp-tools.cn/search/resultsByKeywords', {
+  let { status, data: { count, pois } } = await axios.get('http://cp-tools.cn/search/resultsByKeywords', {
     params: {
       city,
       keyword,
@@ -73,7 +71,7 @@ router.get('/products', async (ctx) => {
       sign
     }
   })
-  
+
   // passport库提供的isAuthenticated()方法用来判断是否登录
   if (status === 200) {
     ctx.body = {
