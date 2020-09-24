@@ -17,11 +17,11 @@ export default {
       return 'smtp.qq.com'
     },
     get user () {
-      return '656371995@qq.com' //填入你的邮箱
+      return 'xxxxxx@qq.com' //填入你的邮箱
     },
     get pass () {
       //授权码(邮箱设置得到)
-      return 'jnnimsbypzawbaib'
+      return 'xxxxxxx' // 你的授权码
     },
     get code () {
       // 生成验证码
