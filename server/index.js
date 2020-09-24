@@ -14,33 +14,35 @@ const { Nuxt, Builder } = require('nuxt')
 const consola = require('consola')
 
 
-/* 数据库、session相关 */
+/* 1.4 数据库、session相关 */
 // 引入mongoose
 import mongoose from 'mongoose'
+import session from 'koa-generic-session' // 处理session
+import Redis from 'koa-redis' // 存储session
+import dbConfig from './dbs/config' // 导入数据库配置
+// json美化
+import json from 'koa-json' // json美化
+// 引入passport（处理session验证）
+import passport from './interface/utils/passport'
 // 连接数据库
 mongoose.connect(dbConfig.dbs, {
   useNewUrlParser: true
 })
-import session from 'koa-generic-session' // 处理session
-import Redis from 'koa-redis' // 存储session
-import dbConfig from './dbs/config' // 导入数据库配置
-app.keys = ['mt', 'keyskeys']
-app.proxy = true
 // session配置，设置key名，前缀，存储方式
 app.use(session({ key: 'mt', prefix: 'mt:uid', store: new Redis() }))
-// json美化
-import json from 'koa-json' // json美化
+
 app.use(json())
-// 引入passport（处理session验证）
-import passport from './interface/utils/passport' 
+
 // 添加passport中间件
 app.use(passport.initialize())
 app.use(passport.session())
 
+app.keys = ['mt', 'keyskeys']
+app.proxy = true
 
 /* 路由相关 */
 // 用于处理post请求参数（koa本身不支持）
-import bodyParser from 'koa-bodyparser' 
+import bodyParser from 'koa-bodyparser'
 // 添加中间件并配置（必须在使用之前添加）
 app.use(bodyParser({
   extendTypes: ['json', 'form', 'text']
@@ -92,5 +94,4 @@ async function start () {
   // 打印日志
   consola.ready({ message: `Server listening on http://${host}:${port}`, badge: true })
 }
-
 start()

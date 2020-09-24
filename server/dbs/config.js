@@ -1,5 +1,5 @@
 export default {
-  // 数据库地址
+  // 1.3配置数据库
   dbs: 'mongodb://127.0.0.1:27017/Meituan',
   redis: {
     // 只读配置

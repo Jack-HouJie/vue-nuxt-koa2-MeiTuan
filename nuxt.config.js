@@ -24,7 +24,7 @@ module.exports = {
   loading: { color: '#FFFFFF' },
 
   /*
-  ** Global CSS
+  ** 1.4 Global CSS
   */
   css: [
     'element-ui/lib/theme-chalk/reset.css',
@@ -33,21 +33,21 @@ module.exports = {
   ],
 
   /*
-  ** Plugins to load before mounting the App
+  ** 1.4 Plugins to load before mounting the App
   */
   plugins: [
     '@/plugins/element-ui'
   ],
 
   /*
-  ** Nuxt.js modules
+  ** 1.4 Nuxt.js modules
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
     '@nuxtjs/axios'
   ],
   /*
-  ** Axios module configuration
+  ** 1.4 Axios module configuration
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
