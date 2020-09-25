@@ -8,7 +8,7 @@ const app = new Koa()
 config.dev = !(app.env === 'production')
 app.proxy = true
 const host = process.env.HOST || '127.0.0.1'
-const port = process.env.PORT || 3333
+const port = process.env.PORT || 3000
 
 /* 1.4 数据库、session相关 */
 import dbConfig from './dbs/config' // 数据库配置

@@ -41,10 +41,12 @@ router.get('/hotPlace', async (ctx) => {
   }
 })
 
-// 2.3主页“有格调”部分
+// 2.3 主页“有格调”部分
+// 5.1 面包屑导航
 // 根据不同的keyword返回当前城市相关景点
 router.get('/resultsByKeywords', async (ctx) => {
   const { city, keyword } = ctx.query;
+  // 本处读模拟接口，实际读本地数据库
   let { status, data: { count, pois } } = await axios.get('http://cp-tools.cn/search/resultsByKeywords', {
     params: {
       city,

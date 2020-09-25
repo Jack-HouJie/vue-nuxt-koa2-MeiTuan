@@ -52,10 +52,11 @@ export default {
       ]
     }
   },
-  async asyncData ({ app }) {
-    let { data } = await app.$axios.get('searchList')
-    return { items: data.list }
-  },
+  // // 子组件异步获取数据
+  // async asyncData ({ app }) {
+  //   let { data } = await app.$axios.get('searchList')
+  //   return { items: data.list }
+  // },
   methods: {
     navSelect: function () {
       console.log('select')

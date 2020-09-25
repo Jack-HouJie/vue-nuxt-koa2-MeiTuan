@@ -2,7 +2,7 @@
   <!-- 地图公共组件 -->
   <div :id="id"
        :style="{width:width+'px',height:height+'px',margin:'34px auto'}"
-       class="m-map" />
+       class="m-map"></div>
 </template>
 
 <script>
@@ -33,7 +33,7 @@ export default {
   },
   watch: {
     point: function (val, old) {
-      this.map.setCenter(val)
+      this.map.setCenter(val) // 定位API
       this.marker.setPosition(val)
     }
   },
@@ -42,18 +42,18 @@ export default {
     let self = this
     // 挂载时生成一个动态ID
     self.id = `map${Math.random().toString().slice(4, 6)}`
-    // 异步加载的回调函数
-    // 配置地图控件
-    //（详见高德地图组件文档）
+    // 地图加载完成后配置地图控件（详见高德地图组件文档）
+    // 本组件中使用地图控件实例
     window.onMapLoaded = () => {
-      // 实例化地图控件
+      // 实例化地图控件(id,配置 对象)
       let map = new window.AMap.Map(self.id, {
-        resizeEnable: true,
-        zoom: 11,
-        center: self.point
+        resizeEnable: true, // 可改变大小
+        zoom: 11, // 伸缩比例
+        center: self.point // 定位中心经纬度
       })
+      // 地图控件实例添加至本组件(方便控制)
       self.map = map
-      // 为地图控件添加插件
+      // 为地图控件添加插件，参数（插件名，配置函数）
       window.AMap.plugin('AMap.ToolBar', () => {
         // 添加工具栏
         let toolbar = new window.AMap.ToolBar()
@@ -63,14 +63,16 @@ export default {
           icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
           position: self.point
         })
+        // 地图标识实例添加至本组件(方便控制)
         self.marker = marker
         marker.setMap(map)
       })
     }
-    const url = `https://webapi.amap.com/maps?v=1.4.10&key=${self.key}&callback=onMapLoaded`
-    // 创建一个DOM容器，放入地图控件
+
+    // 通过外部脚本引入高德地图JS库
     let jsapi = document.createElement('script')
     jsapi.charset = 'utf-8'
+    const url = `https://webapi.amap.com/maps?v=1.4.10&key=${self.key}&callback=onMapLoaded`
     jsapi.src = url
     document.head.appendChild(jsapi)
   },

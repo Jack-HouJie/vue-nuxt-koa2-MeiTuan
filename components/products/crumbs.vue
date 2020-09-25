@@ -9,6 +9,7 @@
       <el-breadcrumb-item>
         <a href="/">
           {{ $store.state.geo.position.city.replace('市','') }}
+          <!-- 父子通信获得数据（SSR） -->
           {{ decodeURIComponent(keyword) }}
         </a>
       </el-breadcrumb-item>
@@ -19,6 +20,7 @@
 <script>
 export default {
   props: {
+    // SSR得到关键词
     keyword: {
       type: String,
       default: ''
