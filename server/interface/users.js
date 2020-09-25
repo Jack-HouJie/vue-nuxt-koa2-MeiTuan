@@ -1,22 +1,21 @@
 import Router from 'koa-router' // koa路由
+import Passport from './utils/passport' // 权限认证工具类
 import Redis from 'koa-redis' // redis
-import Passport from './utils/passport' // 处理session验证
 import User from '../dbs/models/users' // mongoose用户模型
 import axios from './utils/axios' // HTTP请求
 import nodeMailer from 'nodemailer' // node发邮件
 import Email from '../dbs/config' // 邮件配置文件
 
-// 创建路由对象，设置前缀
+// 创建koa路由对象，设置前缀
 let router = new Router({ prefix: '/users' })
 // 获取redis客户端
 let redisCli = new Redis().client
 
-// 设置路由接口
-// 获取用户登陆状态
-// 2.1需求：默认布局头初始化得到登陆信息
+/* 路由接口(中间件) */ 
+// 2.1 获取用户登陆状态
 router.get('/getUser', async (ctx) => {
   // 如果是登陆状态
-  // ctx.isAuthenticated()验证登陆状态（根据cookie）
+  // 使用API验证登陆状态（passport）
   if (ctx.isAuthenticated()) {
     // 从passport取出用户信息
     const { username, email } = ctx.session.passport.user
@@ -35,8 +34,8 @@ router.get('/getUser', async (ctx) => {
   }
 })
 
-// 发送验证码接口
-router.post('/verify', async (ctx, next) => {
+// 3.1 发送验证码
+router.post('/verify', async (ctx) => {
   // 获取 请求中 用户名和验证码过期时间
   let username = ctx.request.body.username
   // 获取 Redis中 用户名和验证码过期时间
@@ -49,6 +48,7 @@ router.post('/verify', async (ctx, next) => {
     }
     return false
   }
+
   // 设置发邮件对象：基于nodeMialer提供的方法
   let transporter = nodeMailer.createTransport({
     service: 'qq',
@@ -60,7 +60,7 @@ router.post('/verify', async (ctx, next) => {
     }
   })
   // 设置收邮件对象，发送相关信息
-  let ko = {
+  let userEmail = {
     // 直接使用config中封装好的接口
     code: Email.smtp.code(), // 验证码
     expire: Email.smtp.expire(), // 过期时间
@@ -69,41 +69,38 @@ router.post('/verify', async (ctx, next) => {
   }
   // 设置邮件信息对象
   let mailOptions = {
-    from: `"认证邮件" <${Email.smtp.user}>`, // 发件人
-    to: ko.email, // 收件人
+    from: `"认证邮件" <${Email.smtp.user}>`, // 发件人(开发者邮箱)
+    to: userEmail.email, // 收件人
     subject: '《学习仿写美团网》注册码', // 标题
-    html: `您在《学习仿写美团网》网页中注册，您的邀请码是${ko.code}` // 内容
+    html: `您在《学习仿写美团网》网页中注册，您的邀请码是${userEmail.code}` // 内容
   }
-
-  // 使用API发送邮件，
-  // 参数：邮件信息对象，回调函数
+  // 异步发送验证码
+  // nodeMail发送邮件sendMail参数：邮件信息对象，回调函数
   await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error)
     } else {
-      // 存储注册方信息(验证码，过期时间，邮箱)至redis
-      // key使用规定的前缀
-      redisCli.hmset(`nodemail:${ko.user}`, 'code', ko.code, 'expire', ko.expire, 'email', ko.email)
+      // 发送成功后存储发送信息(验证码，过期时间，收件地址)至redis
+      // redis哈希表中写入多条数据 hmset(hashListName,key,value,key,value)
+      redisCli.hmset(`nodemail:${userEmail.user}`, 'code', userEmail.code, 'expire', userEmail.expire, 'email', userEmail.email)
     }
   })
-  // 发送邮件后响应
+  // 发送邮件后响应请求
   ctx.body = {
     code: 0,
     msg: '验证码已发送，可能会有延时，有效期1分钟'
   }
 })
 
-// 注册接口
+// 3.1 注册
 router.post('/signup', async (ctx) => {
   // 解构赋值获取post请求参数
   const { username, password, email, code } = ctx.request.body
-  // 比对验证码：注册请求的参数和Redis的数据(发验证码邮件时存的)
-  // 如果请求参数存在验证码
+
+  // 校验验证码(读Redis)
   if (code) {
-    // 读Redis验证码
-    const saveCode = await redisCli.hget(`nodemail:${username}`, 'code')
-    // 读Redis限制时间
-    const saveExpire = await redisCli.hget(`nodemail:${username}`, 'expire')
+    const saveCode = await redisCli.hget(`nodemail:${username}`, 'code') // redis读验证码
+    const saveExpire = await redisCli.hget(`nodemail:${username}`, 'expire') // redis读过期时间
     // 如果验证码相等
     if (code === saveCode) {
       // 如果过期
@@ -128,19 +125,18 @@ router.post('/signup', async (ctx) => {
       msg: '请填写验证码'
     }
   }
-
-  // User模型查操作
-  let user = await User.find({ username })
+  // 存储用户信息(读写mongoDb)
+  let user = await User.find({ username })   // 拿到用户模型
+  // 如果已经被注册
   if (user.length) {
     ctx.body = {
       code: -1,
       msg: '已被注册'
     }
-    return
+    return false
   }
-  // User模型写操作
-  let nuser = await User.create({ username, password, email })
-  // 如果写入成功
+  let nuser = await User.create({ username, password, email })  // 信息写入模型
+  // 存储成功自动登录，存储失败响应
   if (nuser) {
     // 调用登录接口自动登录
     let res = await axios.post('/users/signin', { username, password })
@@ -166,8 +162,8 @@ router.post('/signup', async (ctx) => {
   }
 })
 
-// 登录接口
-router.post('/signin', async (ctx, next) => {
+// 3.2 登录
+router.post('/signin', async (ctx) => {
   // 调用passport方法验证（固定格式）
   return Passport.authenticate('local', function (err, user, info, status) {
     if (err) {
@@ -194,12 +190,11 @@ router.post('/signin', async (ctx, next) => {
   })(ctx, next)
 })
 
-// 退出登陆
-router.get('/exit', async (ctx, next) => {
-  // 执行注销操作
+// 3.3 退出登陆
+router.get('/exit', async (ctx) => {
+  // 使用API注销
   await ctx.logout()
-  // 进行二次验证，看是否成功注销掉，是否已认证
-  // 如果成功注销
+  // 使用API验证登录状态
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: 0

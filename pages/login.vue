@@ -13,9 +13,7 @@
       </div>
       <div class="form">
         <h4 v-if="error"
-            class="tips">
-          <i />{{ error }}
-        </h4>
+            class="tips"><i />{{ error }} </h4>
         <p><span>账号登录</span></p>
         <el-input v-model="username"
                   prefix-icon="profile" />
@@ -53,9 +51,7 @@ export default {
       let self = this;
       // 发送登陆请求
       self.$axios.post('/users/signin', {
-        // 处理中文编码
         username: window.encodeURIComponent(self.username),
-        // 通过MD5加密
         password: CryptoJS.MD5(self.password).toString()
       }).then(({ status, data }) => {
         // 如果服务器响应正常

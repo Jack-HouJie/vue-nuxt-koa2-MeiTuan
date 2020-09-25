@@ -152,7 +152,7 @@ export default {
         // 使用.then()语法，也可以用async await语法
         self.$axios.post('/users/verify', {
           // 设置接口需要的参数
-          // 中文进行URI编码
+          // 中文需要进行URI编码
           username: encodeURIComponent(self.ruleForm.name),
           email: self.ruleForm.email
         }).then(({ status, data }) => {
@@ -187,13 +187,10 @@ export default {
           // 发送注册请求
           self.$axios.post('/users/signup', {
             // 设置post请求参数
-            // 用户名中文编码
-            username: window.encodeURIComponent(self.ruleForm.name),
-            // password-MD5处理之后会返回一个数组，保存多个值
-            // 于是需要toString()函数
-            password: CryptoJS.MD5(self.ruleForm.pwd).toString(),
-            email: self.ruleForm.email,
-            code: self.ruleForm.code
+            username: window.encodeURIComponent(self.ruleForm.name), // 用户名
+            password: CryptoJS.MD5(self.ruleForm.pwd).toString(),// 密码MD5加密
+            email: self.ruleForm.email, // 邮箱
+            code: self.ruleForm.code // 验证码
           }).then(({ status, data }) => {
             // 如果响应正常
             if (status === 200) {

@@ -5,17 +5,16 @@ import LocalStrategy from 'passport-local'
 // 导入本地数据库
 import UserModel from '../../dbs/models/users'
 
-// 使用方法基于passport官方文档
 // 提交数据（策略）
 passport.use(new LocalStrategy(async function (username, password, done) {
   // 查询条件
   let where = {
     username
   }
-  // 从本地数据库查找，判断是否存在该用户
+  // mongDb中找到指定用户模型实例
   let result = await UserModel.findOne(where)
   if (result != null) {
-    // 找到之后匹配密码
+    // 匹配密码
     if (result.password === password) {
       // 使用done回调函数返回用户实例
       return done(null, result)
@@ -29,7 +28,7 @@ passport.use(new LocalStrategy(async function (username, password, done) {
 }))
 
 /** 
-* 序列化API(固定格式)，让用户每次进入时候，通过session验证
+* 序列化API
 * 验证成功后把用户数据序列化存入session
 * 从session中反序列化得到用户数据
 **/ 
