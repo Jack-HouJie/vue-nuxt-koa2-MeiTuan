@@ -33,13 +33,11 @@ router.post('/create', async ctx => {
   }
 })
 
-// 获取购物车信息
+// 8.1 获取购物车信息
 router.post('/getCart', async ctx => {
-  // 从get请求查询字符串得到中购物车ID
-  let { id } = ctx.request.body
+  let { id } = ctx.request.body // Post请求体中得到购物车ID
   try {
-    // Cart模型查操作
-    let result = await Cart.findOne({ cartNo: id })
+    let result = await Cart.findOne({ cartNo: id }) // 读指定ID购物车
     ctx.body = {
       code: 0,
       data: result ? result.detail[0] : {}

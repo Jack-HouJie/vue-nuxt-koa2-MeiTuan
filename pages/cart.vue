@@ -31,8 +31,8 @@ export default {
       cart: []
     }
   },
-  // 计算total
   computed: {
+    // 计算total
     total () {
       let total = 0;
       // 依赖计算
@@ -45,35 +45,36 @@ export default {
   methods: {
     // 提交订单
     submit: async function () {
-      // 发送创建订单请求获得 code? , 订单ID
+      // 发送创建订单请求
       const { status, data: { code, id } } = await this.$axios.post('/order/createOrder', {
-        id: this.cartNo,
-        price: this.cart[0].price,
-        count: this.cart[0].count
+        id: this.cartNo, // 购物车ID
+        price: this.cart[0].price, // 单价
+        count: this.cart[0].count // 数量
       })
       if (status === 200 && code === 0) {
         this.$alert(`恭喜您，已成功下单，订单号:${id}`, '下单成功', {
           confirmButtonText: '确定',
           callback: action => {
-            location.href = '/order'
+            location.href = '/order' // 传统超链接跳转，实现SSR
           }
         })
       }
     }
   },
-  // ssr：获取指定购物车数据并渲染
+  // 获取指定购物车数据（SSR）
   async asyncData (ctx) {
-    // 得到路由get请求查询字符串，购物车id
-    let id = ctx.query.id
-    // 发送请求获取指定ID购物车数据
+    let id = ctx.query.id // 购物车ID（读取请求查询字符串参数）
+    // 指定购物车ID得到购物车信息
     let { status, data: { code, data: { name, price } } } = await ctx.$axios.post('cart/getCart', { id })
+    // 更新组件Data实现SSR
     if (status === 200 && code === 0 && name) {
       return {
-        // 更新组件数据实现SSR
         cart: [{
-          name, price, count: 1
+          name, // 商品名
+          price, // 价格
+          count: 1 // 数量
         }],
-        cartNo: ctx.query.id
+        cartNo: ctx.query.id // 购物车ID
       }
     }
   }

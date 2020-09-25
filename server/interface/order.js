@@ -1,47 +1,40 @@
 import Router from 'koa-router'
 import Order from '../dbs/models/order'
-// 导入购物车实例
-import Cart from '../dbs/models/cart'
-// 加密
+import Cart from '../dbs/models/cart' // 导入购物车实例
 import md5 from 'crypto-js/md5'
-
 const router = new Router({ prefix: '/order' })
 
-// 创建订单，返回订单id（用于支付等功能）
+// 8.2 创建订单，返回订单id（用于支付等功能）
 router.post('/createOrder', async (ctx) => {
-  // 读请求参数：购物车id，金额，数量
-  const { id, price, count } = ctx.request.body
-  // 创建订单加密ID
-  const time = Date()
-  const orderID = md5(Math.random() * 1000 + time).toString()
   // 验证是否登录
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: -1,
       msg: '请先登录!'
     }
-  } else {
-    // Cart查操作得到购物车模型
-    // findOne：找到第一个就返回
-    const findCart = await Cart.findOne({ cartNo: id })
+  } 
+  else {
+    const { id, price, count } = ctx.request.body // 购物车ID，单价，数量（读post参数）
+    const tiem = Date() // 订单创建时间
+    const orderID = md5(Math.random() * 1000 + tiem).toString() // 订单ID（MD5加密）
+    const findCart = await Cart.findOne({ cartNo: id }) // 购物车模型实例（mongoose读）
     // 创建订单模型实例
     const order = new Order({
-      id: orderID,
-      count,
-      total: price * count,
-      time,
-      user: ctx.session.passport.user,
-      name: findCart.detail[0].name,
-      imgs: findCart.detail[0].imgs,
-      status: 0
+      id: orderID, // 订单ID
+      count, // 商品数量
+      total: price * count, // 订单总价
+      time, // 订单创建时间
+      user: ctx.session.passport.user, // 用户名
+      name: findCart.detail[0].name, // 商品名(购物车实例中)
+      imgs: findCart.detail[0].imgs, // 商品图链接(购物车实例中)
+      status: 0 // 订单状态
     })
-    // 创建成功时入库
+    // 保存订单，删除购物车
     try {
       const result = await order.save()
-      // 如果入库正常
+      // 如果保存正常
       if (result) {
         // 数据库中删除指定购物车
-        // (因为购物车是临时状态)
         await findCart.remove()
         ctx.body = {
           code: 0,

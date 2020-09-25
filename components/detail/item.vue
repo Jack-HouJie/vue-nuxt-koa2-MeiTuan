@@ -52,8 +52,10 @@ export default {
         }
       })
       if (status === 200 && code === 0) {
-        // 创建成功候跳转（动态参数路由）指定购物车页面
+        // 创建成功后跳转请求购物车页（此处非前端路由，而是传统新地址跳转，类似点击<a>）
+        // <nuxt-link />和$route.push('')才是前端路由
         window.location.href = `/cart/?id=${id}`
+
       } else {
         console.log('error')
       }

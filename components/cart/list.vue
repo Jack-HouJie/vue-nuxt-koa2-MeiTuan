@@ -9,18 +9,20 @@
     <el-table-column prop="price"
                      label="单价"
                      width="132" />
+
+
     <el-table-column label="数量"
                      width="212">
-      <!-- 此句在table内部创建了一个
-      cartData的加强版数据结构scope
-      scope将cartData转化为行列数据
-      整个table内scope共享 -->
+      
       <template slot-scope="scope">
         <!-- el-ui 计数器组件 -->
         <el-input-number v-model="scope.row.count"
                          :min="0" />
       </template>
+      
     </el-table-column>
+
+
     <el-table-column label="总价">
       <template slot-scope="scope">
         <div>
@@ -34,6 +36,7 @@
 <script>
 export default {
   props: {
+    // 购物车信息
     cartData: {
       type: Array,
       default: () => {
