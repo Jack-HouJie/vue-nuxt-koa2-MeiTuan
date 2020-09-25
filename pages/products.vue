@@ -40,18 +40,20 @@ export default {
       point: []
     }
   },
-  // nuxt异步数据生命周期渲染前获取数据实现SSR
+  // nuxt异步数据生命周期，渲染前获取数据，返回的值自动写入Data
   async asyncData (ctx) {
-    // 通过ctx拿到组件实例上下文
-    let keyword = ctx.query.keyword // 关键词 
-    let city = ctx.store.state.geo.position.city // 用户城市
+    // 通过ctx拿到请求上下文
+    let keyword = ctx.query.keyword // 提取关键词 
+    let city = ctx.store.state.geo.position.city // 提取用户城市
     // 向服务端相应接口发送请求
+    // 请求指定城市关键词的产品
     let { status, data: { count, pois } } = await ctx.$axios.get('/search/resultsByKeywords', {
       params: {
-        keyword,
-        city
+        keyword, // 关键词
+        city // 城市
       }
     })
+    // 制定城市得到城市内的所有区域和类别(用于筛选)
     let { status: status2, data: { areas, types } } = await ctx.$axios.get('/categroy/crumbs', {
       params: {
         city
