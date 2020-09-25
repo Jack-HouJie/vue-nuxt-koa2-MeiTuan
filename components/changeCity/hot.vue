@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     selectCity (e) {
-      // 通过vuex切换城市请求
+      // 更新vuex城市
       this.$store.dispatch('geo/setPosition', {
         city: e.target.innerText
       })

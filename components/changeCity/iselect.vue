@@ -40,9 +40,9 @@ export default {
       cities: [] //全国城市列表
     }
   },
-  // 非SSR：当页面加载时候，同时请求省份列表数据
   mounted: async function () {
     let self = this;
+    // 非SSR：当页面加载时候，同时请求省份列表数据
     let { status, data: { province } } = await self.$axios.get('/geo/province')
     if (status === 200) {
       self.province = province.map(item => {
@@ -54,8 +54,8 @@ export default {
       })
     }
   },
-  // 监听pvalue值，当省份发生改变的时候，可选城市也要跟着改变（联动）
   watch: {
+    // 监听当前省份，请求省份中的城市
     pvalue: async function (newPvalue) {
       let self = this;
       // 请求：获取指定省份城市
@@ -74,7 +74,6 @@ export default {
   methods: {
     // 参数：要搜索的内容，回调
     // 回调函数参数：对象数组，每一项的value值将显示在筛选框中
-    // 加防抖：当用户输入的时候，延时处理
     querySearchAsync: _.debounce(async function (query, callback) {
       let self = this;
       // 如果用户输入过省份得到了此省城市数据
@@ -108,14 +107,12 @@ export default {
       } else {
         city = param.value
       }
-      // 切换vuex中城市
+      // 切换vuex中当前城市
       this.$store.dispatch('geo/setPosition', {
         city
       })
-      // 跳转到主页
-      this.$router.push({
-        path: '/'
-      })
+      // 跳转到主页（编程式导航）
+      this.$router.push({ path: '/' })
     }
   }
 }

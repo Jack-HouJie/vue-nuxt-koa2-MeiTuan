@@ -30,9 +30,9 @@ export default {
       block: []
     }
   },
-  // 获取数据并渲染（非SSR）
   async mounted () {
     let self = this;
+    // 获取数据(全国所有城市)（非SSR）
     let blocks = [] // 保存首字母与城市对应
     let { status, data: { city } } = await self.$axios.get('/geo/city');
     if (status === 200) {
@@ -70,16 +70,15 @@ export default {
     }
   },
   methods: {
+    // 更换城市
     changeTheCity: function (val) {
-      // 通过vuex 更新当前数据
+      // 更新当前城市
       let that = this;
       that.$store.dispatch('geo/setPosition', {
         city: val
       })
       // 跳转回主页
-      that.$router.push({
-        path: '/'
-      })
+      that.$router.push({ path: '/' })
     }
   }
 }
