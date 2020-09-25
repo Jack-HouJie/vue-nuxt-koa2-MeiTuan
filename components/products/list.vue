@@ -52,7 +52,7 @@ export default {
       ]
     }
   },
-  // // 子组件异步获取数据
+  // // 子组件异步获取数据，返回的值自动写入Data
   // async asyncData ({ app }) {
   //   let { data } = await app.$axios.get('searchList')
   //   return { items: data.list }

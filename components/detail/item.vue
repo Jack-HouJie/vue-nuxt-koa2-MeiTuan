@@ -40,22 +40,19 @@ export default {
     // 创建购物车
     createCart: async function () {
       let self = this;
-      // 无产品库，把商品库的数据上传到购物车，通过id绑定关系
+      // 发送请求创建购物车
       let { status, data: { code, id } } = await this.$axios.post('/cart/create', {
         params: {
-          // 因为没有产品库，此处使用随机ID
-          // 实际中需使用产品对应ID
-          id: Math.random().toString().slice(3, 9),
+          id: Math.random().toString().slice(3, 9), // 产品ID（本处使用随机ID模拟）
           detail: {
-            name: self.meta.name,
-            price: self.meta.biz_ext.cost,
-            imgs: self.meta.photos
+            name: self.meta.name, // 产品名
+            price: self.meta.biz_ext.cost, // 产品价格
+            imgs: self.meta.photos // 产品图片地址
           }
         }
       })
       if (status === 200 && code === 0) {
-        // 跳转到创建的购物车的页面
-        // Nuxt根据查询字符串进行SSR
+        // 创建成功候跳转（动态参数路由）指定购物车页面
         window.location.href = `/cart/?id=${id}`
       } else {
         console.log('error')

@@ -6,6 +6,7 @@ const Cart = new Schema({
     type: String,
     require: true
   },
+  // 产品细节信息（包括价格、图片等）
   detail: {
     type: Array,
     require: true
@@ -26,5 +27,4 @@ const Cart = new Schema({
     require: true
   }
 })
-
 export default mongoose.model('Cart', Cart)

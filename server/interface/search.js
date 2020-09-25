@@ -60,26 +60,24 @@ router.get('/resultsByKeywords', async (ctx) => {
   }
 })
 
-// 通过关键词获取当地城市的商品
+// 7.1 获取制定城市关键词的产品信息
 router.get('/products', async (ctx) => {
-  let city = ctx.query.city || '北京';
-  let keyword = ctx.query.keyword || '旅游';
-  let { status, data: {
-    product, more
-  } } = await axios.get('http://cp-tools.cn/search/products', {
+  // 使用接口得到产品信息
+  let city = ctx.query.city || '北京'; // 不规定城市使用北京
+  let keyword = ctx.query.keyword || '旅游'; // 不规定关键词使用旅游
+  let { status, data: { product, more } } = await axios.get('http://cp-tools.cn/search/products', {
     params: {
       city,
       keyword,
       sign
     }
   })
-
-  // passport库提供的isAuthenticated()方法用来判断是否登录
+  // 响应
   if (status === 200) {
     ctx.body = {
       product,
-      more: ctx.isAuthenticated() ? more : [],
-      login: ctx.isAuthenticated()
+      more: ctx.isAuthenticated() ? more : [], // 产品商家优惠列表商品
+      login: ctx.isAuthenticated() // 验证登录
     }
   } else {
     ctx.body = {
@@ -89,6 +87,5 @@ router.get('/products', async (ctx) => {
     }
   }
 })
-
 
 export default router
