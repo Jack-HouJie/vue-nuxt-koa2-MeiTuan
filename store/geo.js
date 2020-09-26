@@ -1,15 +1,13 @@
-const actions = {
-  setPosition: ({ commit }, position) => {
-    commit('setPosition', position)
-  }
-}
-
+// 当前省份/城市
+const state = () => ({ position: {} })
 const mutations = {
   setPosition (state, val) {
     state.position = val
   }
 }
-
-const state = () => ({ position: {} })
-
+const actions = {
+  setPosition: ({ commit }, position) => {
+    commit('setPosition', position)
+  }
+}
 export default { namespaced: true, state, mutations, actions }

@@ -1,7 +1,6 @@
 <template>
   <div class="m-geo">
-    <!-- SSR：从vuex中获取数据
-    vuex中的数据在组件挂载前由nuxt请求得到 -->
+    <!-- SSR(nuxt初始化更新vuex) -->
     <i class="el-icon-location" />
     {{ $store.state.geo.position.city }}
     <nuxt-link class="changeCity"

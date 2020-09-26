@@ -3,6 +3,7 @@
     <el-row class="m-header-searchbar">
       <el-col :span="3"
               class="left">
+        <!-- 传统跳转（实现SSR），非前端路由 -->
         <a href="/">
           <img src="//s0.meituan.net/bs/fe-web-meituan/e5eeaef/img/logo.png"
                alt="美团">

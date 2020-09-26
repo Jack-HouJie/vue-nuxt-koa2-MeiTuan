@@ -54,11 +54,8 @@ export default {
       return this.list[this.kind]
     }
   },
-  // 非SSR获取数据（初始化“全部”数据）
   async mounted () {
     let self = this;
-    //console.log(self.$store.state.geo.position.city);
-
     let { status, data: { count, pois } } = await self.$axios.get('/search/resultsByKeywords', {
       params: {
         keyword: '景点',
@@ -67,10 +64,7 @@ export default {
     })
     if (status === 200 && count > 0) {
       let r = pois.filter(item => item.photos.length).map(item => {
-        // 数组中的每一项是一个对象，
-        // 前端直接使用属性名
-        // 后端响应数据填入属性值（方便修改）
-        return {
+        return { // 前后端数据结构分离
           title: item.name,
           pos: item.type.split(';')[0],
           price: item.biz_ext.cost || '暂无',
@@ -84,7 +78,7 @@ export default {
     }
   },
   methods: {
-    // 非SSR获取数据（动态更新数据）
+    // 非SSR获取数据
     over: async function (e) {
       let dom = e.target
       let tag = dom.tagName.toLowerCase()

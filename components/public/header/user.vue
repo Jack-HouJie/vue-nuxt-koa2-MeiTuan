@@ -35,9 +35,7 @@ export default {
       user: ''
     }
   },
-
-  // 组件渲染完成后
-  // 本处用async await 处理promise 也可以用.then()
+  // 获取数据（非SSR）
   async mounted () {
     // 发送请求，解构赋值得到await异步结果
     const { status, data: { user } } = await this.$axios.get('/users/getUser')

@@ -12,11 +12,11 @@ let router = new Router({ prefix: '/users' })
 let redisCli = new Redis().client
 
 /* 路由接口(中间件) */ 
-// 2.1 获取用户登陆状态
+
+// 2.1 获取用户信息
 router.get('/getUser', async (ctx) => {
   // 如果是登陆状态
-  // 使用API验证登陆状态（passport）
-  if (ctx.isAuthenticated()) {
+  if (ctx.isAuthenticated()) { // 使用passportAPI
     // 从passport取出用户信息
     const { username, email } = ctx.session.passport.user
     // 返回信息存至响应体

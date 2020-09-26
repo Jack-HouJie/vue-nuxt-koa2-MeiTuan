@@ -1,21 +1,12 @@
 import Router from 'koa-router';
 import axios from './utils/axios'
-
 let router = new Router({ prefix: '/geo' })
-// 请求课程提供的接口数据签名
-const sign = 'abcd'
 
-// 2.1得到城市位置
+/* 位置信息相关接口 */
+// 1.2 查询当前省份/城市
 router.get('/getPosition', async (ctx) => {
-  // 使用第三方接口得到城市数据
-  // 解构赋值得到数据
-  let {
-    status,
-    data: {
-      province,
-      city
-    }
-  } = await axios.get(`http://cp-tools.cn/geo/getPosition?sign`)
+  // 使用第三方接口得到数据
+  let { status, data: { province, city } } = await axios.get(`http://cp-tools.cn/geo/getPosition?abcd`)
   // 设置响应
   if (status === 200) {
     ctx.body = {
@@ -30,15 +21,10 @@ router.get('/getPosition', async (ctx) => {
   }
 })
 
-// 2.2.1 得到首页body左侧菜单
+
+// 2.1 主页左侧菜单数据
 router.get('/menu', async (ctx) => {
-  // const result = await Menu.findOne()
-  // ctx.body = {
-  //   menu: result.menu
-  // }
-  let { status, data: {
-    menu
-  } } = await axios.get(`http://cp-tools.cn/geo/menu?sign`);
+  let { status, data: { menu } } = await axios.get(`http://cp-tools.cn/geo/menu?abcd`);
   if (status === 200) {
     ctx.body = {
       menu
