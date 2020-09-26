@@ -38,8 +38,7 @@ router.post('/createOrder', async (ctx) => {
         await findCart.remove()
         ctx.body = {
           code: 0,
-          //响应体传回订单 
-          id: orderID
+          id: orderID // 订单ID
         }
       } else {
         ctx.body = {
@@ -54,9 +53,8 @@ router.post('/createOrder', async (ctx) => {
   }
 })
 
-// 获取所有订单
+// 9.1 获取所有订单
 router.post('/getOrders', async ctx => {
-  // passport验证登录
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: -1,
@@ -64,10 +62,8 @@ router.post('/getOrders', async ctx => {
       msg: 'please login'
     }
   } else {
-    // 容错处理
     try {
-      // Order模型查操作
-      const result = await Order.find()
+      const result = await Order.find() // 找到指定订单(未实现)
       if (result) {
         ctx.body = {
           code: 0,

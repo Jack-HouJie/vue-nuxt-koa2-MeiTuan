@@ -97,28 +97,29 @@ export default {
   },
   // SSR：服务端发送请求并渲染
   async asyncData (ctx) {
-    const { status, data: { code, list } } = await ctx.$axios.post('/order/getOrders')
+    const { status, data: { code, list } } = await ctx.$axios.post('/order/getOrders',{
+      
+    })
     if (status === 200 && code === 0 && list.length) {
       return {
-        // 将后端返回数据和前端数据进行映射
         list: list.map(item => {
           return {
             img: item.imgs.length ? item.imgs[0].url : 'https://i.loli.net/2019/01/10/5c3767c4a52de.png',
-            name: item.name,
-            count: 1,
-            total: item.total,
-            status: item.status,
-            statusText: item.status === 0 ? '待付款' : '已付款'
+            name: item.name, // 商品名
+            count: 1, // 商品数
+            total: item.total, // 商品总价
+            status: item.status, // 订单状态
+            statusText: item.status === 0 ? '待付款' : '已付款' // 状态文本
           }
         }),
         cur: list.map(item => {
           return {
             img: item.imgs.length ? item.imgs[0].url : 'https://i.loli.net/2019/01/10/5c3767c4a52de.png',
-            name: item.name,
-            count: 1,
-            total: item.total,
-            status: item.status,
-            statusText: item.status === 0 ? '待付款' : '已付款'
+            name: item.name, // 当前订单
+            count: 1, // 默认数量1
+            total: item.total, // 总价
+            status: item.status, // 状态
+            statusText: item.status === 0 ? '待付款' : '已付款' // 状态文本
           }
         })
       }
