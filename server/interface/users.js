@@ -164,7 +164,7 @@ router.post('/signup', async (ctx) => {
 
 // 3.2 登录
 router.post('/signin', async (ctx) => {
-  // 调用passport方法验证（固定格式）
+  // 调用passport方法验证，参数：（策略，验证回调）
   return Passport.authenticate('local', function (err, user, info, status) {
     if (err) {
       ctx.body = {
